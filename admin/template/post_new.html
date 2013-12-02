@@ -1,0 +1,114 @@
+## -*- coding: utf-8 -*-
+<%include file="../../post/template/header.html"/>
+<div id="admin_wrapper">
+    <script type="text/javascript" src="/tinymce/jscripts/tiny_mce/tiny_mce.js"></script>
+    <script type="text/javascript">
+    	tinyMCE.init({
+    		mode: "textareas",
+            height: "480",
+    		theme: "advanced",
+    		plugins: "inlinepopups",
+    		theme_advanced_toolbar_location: "top",
+    		theme_advanced_toolbar_align: "left", 
+    		theme_advanced_statusbar_location: "bottom",
+    		theme_advanced_resizing: "1", 
+    		theme_advanced_resize_horizontal: "", 
+    		dialog_type: "modal", 
+    		relative_urls: "",
+    		remove_linebreaks: "1", 
+    		paste_convert_middot_lists: "1", 
+    		paste_remove_spans: "1",
+    		theme_advanced_buttons1: "bold,italic,underline,strikethrough,|,bullist,numlist,blockquote,|,justifyleft,justifycenter,justifyright,|,link,unlink,|,pastetext,pasteword,forecolor,|,outdent,indent,|,undo,redo,|,image,code", 
+    		theme_advanced_buttons2: "",
+    		theme_advanced_buttons3: "", 
+    		theme_advanced_buttons4: "",
+            file_browser_callback: 'wfb',
+        	imagemanager_insert_template : function(fo, enc) {
+        		return 'xxxx';
+        	},
+    	});
+        
+        function wfb(field_name, url, type, win){
+            tinyMCE.activeEditor.windowManager.open({
+                file : '/admin/uploadImg',
+                title : '浏览图片',
+                width : 420,  // Your dimensions may differ - toy around with them!
+                height : 200,
+                resizable : "no",
+                inline : "yes",  // This parameter only has an effect if you use the inlinepopups plugin!
+                close_previous : "no"
+            }, {
+                window : win,
+                input : field_name
+            });
+            return false;
+        }
+        
+        function addTag(name){
+            var field = document.getElementById('post_form')['tags'];
+            if(field.value.replace(/^\s*?(\S*)\s*$/, '$1') == ''){
+                field.value = name;
+            }else{
+                field.value += ', ' + name;
+            }
+        }
+        
+        $(document).ready(function(){
+            if($('#post_private_flag').val() == 'True'){
+                $('#post_private_flag_lbl').css('background-color', '#8FBF60');
+            }
+            $('#post_private_flag_lbl').click(function(){
+                if($('#post_private_flag').val() == 'False'){   //if this is *NOT* a private post(page)
+                    $(this).css('background-color', '#8FBF60');    //mark it as private
+                    $('#post_private_flag').val('True');
+                }else{
+                    $(this).css('background-color', null);
+                    $('#post_private_flag').val('False');
+                }
+            });
+        });
+        
+    </script>
+    <div id="admin_nav">
+        <a href="/admin/" class="current">写新帖</a>
+        <a href="/admin/comments/">管理评论</a>
+        <div class="clear_bar"></div>
+    </div>
+    <div id="newpost_main">
+    	<form action="/admin/write" method="post" id="post_form">
+            <div id="side_panel">
+                <input type="hidden" name="edit" value="${'true' if post else 'false'}">
+                %if not post or not post.isPage:
+                    <label for="title">Title</label>
+            	    <input type="text" name="title" value="${post.title if post else ''}">
+                    <label for="slug">Slug</label>
+            	    <input type="text" name="slug" value="${post.slug if post else ''}">
+                    <label for="tags">Tags</label>
+            	    <input type="text" name="tags" value="${post.getTagStr() if post else ''}">
+                    <div>
+                    %for tag in tags:
+                        <a href="javascript: addTag('${tag.name}')">${tag.name}</a>
+                    %endfor
+                    </div>
+                %else:
+                    <input type="hidden" name="slug" value="${post.slug}">
+                %endif
+                <input type="checkbox" id="post_private_flag" name="post_private_flag" checked="checked" value="${post.isPrivate if post else 'False'}" />
+                <div id="post_private_flag_lbl">写给我自己</div>
+        	    <input type="submit" value="${u'修改' if post else u'发表'}！">
+            </div>
+            <div id="content_body">
+                <textarea name="content" rows="3" cols="60">${post.content if post else ''}</textarea>
+            </div>
+            <div id="smileys"></div>
+    	</form>
+    </div>
+    <script type="text/javascript">
+        var sa = [':mrgreen:', 'mrgreen', ':neutral:', 'neutral', ':twisted:', 'twisted', ':arrow:', 'arrow', ':shock:', 'eek', ':smile:', 'smile', ':???:', 'confused', ':cool:', 'cool', ':evil:', 'evil', ':grin:', 'biggrin', ':idea:', 'idea', ':oops:', 'redface', ':razz:', 'razz', ':roll:', 'rolleyes', ':wink:', 'wink', ':cry:', 'cry', ':eek:', 'surprised', ':lol:', 'lol', ':mad:', 'mad', ':sad:', 'sad', '8-)', 'cool', '8-O', 'eek', ':-(', 'sad', ':-)', 'smile', ':-?', 'confused', ':-D', 'biggrin', ':-P', 'razz', ':-o', 'surprised', ':-x', 'mad', ':-|', 'neutral', ';-)', 'wink', '8)', 'cool', '8O', 'eek', ':(', 'sad', ':)', 'smile', ':?', 'confused', ':D', 'biggrin', ':P', 'razz', ':o', 'surprised', ':x', 'mad', ':|', 'neutral', ';)', 'wink', ':!:', 'exclaim', ':?:', 'question'];
+        var html = [];
+        for(var i = 0; i < sa.length; i += 2){
+            html.push('<span title="' + sa[i] + '" class="smiley smiley_' + sa[i + 1] + '" >&nbsp;</span>&nbsp;');
+        }
+        document.getElementById('smileys').innerHTML = html.join('');
+    </script>
+<%include file="../../post/template/footer.html"/>

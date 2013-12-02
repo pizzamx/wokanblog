@@ -1,0 +1,26 @@
+## -*- coding: utf-8 -*-
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xmlns:thr="http://purl.org/syndication/thread/1.0" xml:base="${baseUrl}/feed">
+    <title>我看行之评论Feed</title>
+    <subtitle type="text">坚持·厚道·平常心</subtitle>
+    <link rel="self" href="${baseUrl}/comments/feed"/>
+    <updated>${now}</updated>
+	<generator uri="http://code.google.com/p/wokanblog/">我看行</generator>
+	<link rel="alternate" type="text/html" href="${baseUrl}" />
+	<id>${baseUrl}/comments/feed</id>
+    <author>
+        <name>pizza</name>
+        <email>root@wokanxing.info</email>
+    </author>
+    % for comment in data:    
+        <entry>
+        	<author><name>${comment.authorName}</name></author>
+            <title>Comment on ${comment.post.title} by ${comment.authorName}</title>
+            <link href="${baseUrl}${comment.makeLink()}"/>
+            ##FIXME: id should be refined
+            <id>${baseUrl}${comment.makeLink()}</id>
+            <updated>${comment.getCSTDate().isoformat()}</updated>
+            <summary type="html"><![CDATA[${comment.strippedContent()}]]></summary>
+        </entry>
+    % endfor
+</feed>

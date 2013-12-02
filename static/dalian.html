@@ -1,0 +1,153 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml">
+    <head>
+        <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+        <title>大连游记 - 2008.6</title>
+		<meta name="description" content="大连旅游 大连 我看行 pizzamx 周杰伦" />
+        <script src="http://ditu.google.com/maps?file=api&amp;v=2&amp;key=ABQIAAAAnauxV_p2Dlya1v7KwY7VBhSeT5rH9gxYGkIg8VyGEvmAF_3OSBRFnSFikRHFBwqnKoXcjQUoFcRp5w&hl=zh-CN" type="text/javascript"></script>
+        <style type="text/css">
+            a img { border: 0; }
+            #wrapper { padding-left: 200px; clear: both; }
+            #map_canvas { width: 100%; height: 600px; float:left; }
+            #sidebar { position: relative; float:left; width: 200px; margin-left: -100%; right: 200px; left: 0; }
+            .b, .c { display: block; padding: 0 3px; }
+            .b {  float: left; }
+            .c {  float: right; margin-right: 5px; }
+            #step_indicator { float: left; width: 90px; text-align: center; line-height: 23px; }
+            #note { clear: both; padding-top: 20px; }
+            #wrapper > #sidebar { left: -200px; margin-left: expression(document.all.map_canvas.offsetWidth * -1); /* Fix for IE7 */ }
+        </style>
+        <script type="text/javascript">
+        
+			var pts= [["大连站<br/><img style='width:288px; height:216px' src='http://lh6.ggpht.com/pizzamx/SFFA_HB8-kI/AAAAAAAAAWc/tw-6j57hRF4/s288/DSCN1722_resize.JPG' />",121.630585,38.923294],["兴工街",121.588524,38.917332],["住处",121.645088,38.885487],["五只老虎<br/><img style='width:288px; height:216px' src='http://lh4.ggpht.com/pizzamx/SFFQhk2ErCI/AAAAAAAAAkU/z3EY6AJ6Xd0/s288/DSCN1754_resize.JPG' />",121.678711,38.871223],["中山广场<br/><img style='width:288px; height:216px' src='http://lh6.ggpht.com/pizzamx/SFFB02EB5YI/AAAAAAAAAXk/NJ-s_tfAFck/s288/DSCN1764_resize.JPG' />",121.643951,38.921524],["轻轨三号线香炉礁站",121.603676,38.929077],["金石滩黄金海岸<br/><img style='width:288px; height:216px' src='http://lh3.ggpht.com/pizzamx/SFFEiQIkjbI/AAAAAAAAAZ4/4M2Tno4jRcg/s288/DSCN1790_resize.JPG' />",121.993477,39.072311],["地质公园<br/><img style='width:288px; height:216px' src='http://lh6.ggpht.com/pizzamx/SFFG9klepbI/AAAAAAAAAcA/WQEj9ze-USw/s288/DSCN1826_resize.JPG' />",122.053215,39.069046],["海之韵广场",121.705429,38.91214],["黑石礁",121.557625,38.874195],["旅顺车站",121.263611,38.814198],["森林公园<br/><img style='width:288px; height:216px' src='http://lh6.ggpht.com/pizzamx/SFFRepdesRI/AAAAAAAAAlE/DhjIYWI4Qok/s288/DSCN1874_resize.JPG' />",121.60981,38.873394],["城堡<br/><img style='width:288px; height:216px' src='http://lh5.ggpht.com/pizzamx/SFFMT3VIS_I/AAAAAAAAAhg/RyLXhuqqvaE/s288/DSCN1920_resize.jpg' />",121.594147,38.878372],["亚洲最大广场<br/><img style='width:288px; height:216px' src='http://lh4.ggpht.com/pizzamx/SFFPbhRcuMI/AAAAAAAAAjU/LBbF0trYavc/s288/DSCN1981_resize.JPG' />",121.588013,38.882046],["傅家庄<br/><img style='width:288px; height:216px' src='http://lh6.ggpht.com/pizzamx/SFFPE5U5-kI/AAAAAAAAAi8/17a0Q7WnyvE/s288/DSCN1964_resize.JPG' />",121.618309,38.86541], ["棒棰岛外<br/><img style='width:288px; height:216px' src='http://lh3.ggpht.com/pizzamx/SFFBKnBLpKI/AAAAAAAAAW0/k1LsRWE-InQ/s288/DSCN1729_resize.JPG' />", 121.717873, 38.885421], ["南子弹库<br/><img style='width:288px; height:216px' src='http://lh5.ggpht.com/pizzamx/SFFJwXJCpMI/AAAAAAAAAeE/9Mk4ZVO8TbQ/s288/DSCN1861_resize.JPG' />", 121.281681, 38.794299]];
+        var steps = [[0, 0], [0, 1], [1, 2], [2, 3], [3, 15], [15, 4], [4, 2], [2, 5], [5, 6], [6, 7], [7, 0], [0, 8], [8, 2], [2, 9], [9, 10], [10, 16], [16, 10], [10, 11], [11, 12], [12, 13], [13, 2], [2, 3], [3, 14], [14, 13], [13, 0]];
+        var notes = ["出发点：大连火车站", "下了火车，花了两块钱买了地图，前往之前联系的住处。到了才发现兴工街其实是一个交通很方便的地方，若干公交以及201电车都能到，第一次来，当然要试试看有轨电车了，车是去年才翻新的，所以只是看上去比较古老，里面的木头都很新。", "可惜住宿的事发生了变数，这里省略三十几个字，我们又得找地方住……在路边小店打电话问elong价钱，老板在一旁插话说他们都是忽悠你们，那么贵你们也住，我给你们介绍一个blablahah……看样子他不是在忽悠，于是姑且相信，打车到了陌生的八一路，还真找到了一个不错的，只是这地方交通略显不变，只有四条公交通过。", "安顿了之后翻看地图，发现离老虎滩比较近，可以直达，于是先开往那里。虎滩公园基本是一个不花钱没得玩的地方，主要是一张套票看四个馆，里面关着海豚企鹅珊瑚什么的，我们没去看，而是被忽悠上了观光游船。", "被忽悠的过程就按下不表了，花了三十上船之后居然被告知还要再花十元才能上二层看景，这次显然不能再被忽悠了，于是我们采取了非暴力不合作的方式拒绝交钱，于是一船的人都上去了就我们坐着不动。船员数次过来忽悠，最后他自己先受不了了，不收钱让我们上去了。游船过程就比较无聊了，远远看见了棒棰岛和国宾馆，可惜这两个地方都没机会再去。", "回到虎滩发现没啥好看的了，于是选择坐车北上去看中山广场。一路上经过若干别墅区，看来大连东海岸属于富人区，这一带基本是大连最漂亮的居民区了。中山广场是小日本搞的，一整圈都是西洋建筑，基本上中国的殖民建筑都长这x样，看上去很养眼，但想想这些可都是我们的屈辱史。", "来之前在网上看说广场周围有一条天津街吃的东西不少，于是我们七拐八转终于找到了，不过没发现什么，除了一堆烧烤滩……于是就吃了烧烤，感觉一般。第一天的行程结束，回到住处。", "第二天的金石滩是早就计划好的，据说黄金海岸特别好玩，我也挺期待，看看到底黄金到什么地步。大连的轻轨看起来和北京的13号线差不多，不过价钱可就差远了，全程要八元，好贵。一路上也没有什么特别好的风景，或者因为是我没看到……车窗上方贴的一条广告挡住了我的视线，真是讨厌。", "不知过了多久，到站了，下车之后到游客服务站听了一堆忽悠之后决定直奔黄金海岸。到了之后还真不是一般的失望，“沙滩”都是乱石，海水也很脏，岸边的休息区还在施工。这时天公又很不作美的下起了雨，顿时觉得很沮丧，这次出行最期望的景致居然是这个样子的。没办法准备留个爷到此一游的象征照就回去，不过此时看到不远处的一座桥，正好雨又小了，于是准备过去看看，不想由此揭开了此行最美的一段风景。", "从黄金海岸往东是一段非常美丽的沿海公路，我们骑着双人自行车悠闲的在上路上晃悠。路边还有木栈道，如果有时间一定推荐来走走，到底美妙在哪里请大家自行体验。走到头是五月刚落成的海滨地质国家公园，看样子也很好玩，可惜时间实在不够了我们就回头了，否则在这边玩两天都嫌不够。", "回头做到了火车站，看天还没黑打算去看看海之韵广场，可惜由于准备不足在问路和找东西吃上花了太多时间，到上车时时间已经很晚了。", "做到海之韵的时候好像已经九点了，周围漆黑一片，只有星星灯火，抓了一个大哥问，说公园已然没人了，只好悻悻而归。后来听出租车师傅说其实东海公园（跟海之韵在一起）风景很好的，看来什么地方都得去体验一下啊！", "回到住处结束了第二天的行程，明天的计划是去旅顺，回来晚上逛亚洲最大广场——星海广场，有时间的话暴走一下滨海路。", "早上又在楼下吃了米线，这样的早餐真不错。然后辗转到了黑石礁，坐长途车去旅顺，所谓的长途车也就开一小时左右，票价七元。", "因为事先没有考虑跟团，所以到了旅顺之后有点发懵，这时一个司机又上来死命忽悠，极力推荐我们去看军港。由于各种原因（这里略去八十几字），最后随便挑了一个炮台去看。司机虽然是个大忽悠，但一路上还是很热情地向我们讲解旅顺的历史，一面感叹因为对外封闭最繁华的地方也就是一个购物中心，一面还嘲笑大连过去只是个叫青泥洼的小渔村以前还叫旅大市呢现在搞得这么nx云云。", "这个所谓的南子弹库和炮台的确没啥看点，标志性的逛了一圈顺便和“黄海”招牌合影之后我们便打道回旅顺车站。", "在旅顺只呆了不到两小时，未免有些遗憾，下次，如果有下次的话，一定要好好看一看，并且最好自己来，或者是和想看的人一起来……告别旅顺之前还要提一下这里大连医科大学新校区，气势叫一个恢宏啊，依山傍海景色也绝佳，只是周围比较荒凉，旅顺的旅游资源还是有待进一步开发。", "离开旅顺车站我们坐上了一辆狂飙的大巴，司机开得非常猛，以至于我们花了比来时少很多的时间就回到了大连。因为时间尚早，所以暴走滨海路的计划得以部分实施，我们费了一番周折从火车站找车坐到了森林公园，这个地方看起来也很不错，不知道里面啥样的。话说大连很多这种大片绿地晴天大海的景致，真是相当养眼。", "这段路应该是叫滨海西路，不算很远，好像不要两个小时就走到了星海广场。沿路在修木栈道，貌似奥运火炬到时要来这里传递。路上最引人注目的建筑就是靠近星海广场的城堡了，据说是一个香港老板盖的，旁边还有他的小别墅，也是相当气派。城堡2000年落成一来就一层开放为贝壳博物馆，上面都是空着的，看门大爷告诉我们不久这里就能改成宾馆啦，贝壳博物馆则要搬到广场附近去。城堡周围还有一些高层公寓，看上去也是很高档的样子，星海广场周围好像都是这种住宅区，一户几百平米那种。", "到了星海广场发现肚子好饿，无奈周围看上去全是超高档海鲜酒楼，正好要去找同学，我们便跑到西安路去吃了一顿饭，回来的时候已经九点多了，囧……星海广场步行走个直径大概要半小时，不过中间有机动车道，所以算不上纯行人广场。广场嘛，也就没啥可看的，中间有个华表，照张到此一游相；南边有个百年城雕，就是一条铜板上好多脚印，有建市那年出生的也有99年百年纪念时出生的，有大人的有小娃儿的，有免费的有收费的……旁边还有一个类似极限比赛场地的两头翘的巨大石板，可惜我的破鞋太滑爬不到顶端- -0", "太晚啦，打车回住处，明天就要退房了……感觉大连加旅顺花个五天差不多能玩到爽，毕竟城市还是很小的。明天再暴走一段滨海路，然后回星海再好好看看。", "早上吃了米线，退了房，背上大包拎上吃的坐车又到了老虎滩，这次打算走另外半条滨海西路。", "这次就当爬山锻炼了，基本上看不到海，都是弯弯曲曲的山路，所以奉劝以后要去大连的同学，不要把时间浪费在这里了……路上看到的基本上都是来锻炼的或者是自驾来看风景的，我们花了近三个小时才终于走到了傅家庄，也就是一个海边公园。这里是一个周末休闲的好地方，和大连其他的海滩一样，满眼都是自助烧烤的人群，真是羡慕啊，边看海边吃肉……", "还有点时间，再去星海广场看一眼，可惜没有直达车，绕了一圈才到广场，拍了到此一游照，又在大滑板上玩了一会儿。白天广场的人真多，好热闹，可惜火车不等人，没呆多久就得离开了。", "至此大连游结束，北京往返大连的火车时间都不错，睡一个觉就到了。"];
+        var lines = [], markers = [];
+        var map;
+        var CURRENT_STEP = 0;
+       
+        Array.prototype.foreach = function(func, start, end){
+            if(!start){
+                start = 0;
+                end = this.length;
+            }
+            for(var i = start; i < end; i++){
+                func(this[i], i);
+            }
+        }
+       
+        function initialize() {
+            if (GBrowserIsCompatible()) {
+                map = new GMap2(document.getElementById("map_canvas"));
+                map.enableScrollWheelZoom();
+                map.setCenter(new GLatLng(0,0),0);
+                map.addControl(new GSmallZoomControl());
+                map.addControl(new GMapTypeControl());
+                map.addControl(new GScaleControl());
+
+                GEvent.addListener(map, "addoverlay", function(ovl) {
+                    if(ovl.getLatLng){
+                        //alert(ovl.getLatLng());
+                    }
+                });
+
+                //var gx = new GGeoXml("http://pizzamx.googlepages.com/dalian.kml");
+                //map.addOverlay(gx);
+                pts.foreach(function(p){
+                    var latlng = new GLatLng(p[2], p[1]);
+                    var marker = makeMarker(latlng, p[0]);
+                    markers[markers.length] = marker;
+                    map.addOverlay(marker);
+                    marker.hide();
+                });
+
+                steps.foreach(function(g){
+                    var p1 = pts[g[0]];
+                    var p2 = pts[g[1]];
+                    var polyline = new GPolyline([new GLatLng(p1[2], p1[1]), new GLatLng(p2[2], p2[1])], "#00ff00", 2, 0.7);
+                    lines[lines.length] = polyline;
+                    map.addOverlay(polyline);
+                    polyline.hide();
+                });
+
+                goToStep(0);
+            }else{
+                alert("你的浏览器太烂了");
+            }
+        }
+       
+        function goToStep(idx, forward){
+            var bounds = new GLatLngBounds();
+            var from = markers[steps[idx][0]], to = markers[steps[idx][1]];
+            bounds.extend(from.getLatLng());
+            bounds.extend(to.getLatLng());
+            from.show();
+            to.hide();  //in case of round trip...
+            to.show();
+            if(forward && idx > 1){
+                if(markers[steps[idx - 1][0]] != to){
+                    markers[steps[idx - 1][0]].hide();
+                }
+                lines[idx - 1].hide();
+            }else if(!forward && idx < steps.length - 1){
+                markers[steps[idx + 1][1]].hide();
+                lines[idx + 1].hide();
+            }
+            lines[idx].show();
+            map.setZoom(map.getBoundsZoomLevel(bounds));
+            map.setCenter(bounds.getCenter());
+            document.getElementById("note").innerHTML = notes[CURRENT_STEP];
+            document.getElementById("step_indicator").innerHTML = CURRENT_STEP == 0 ? "准备出发！" : "第" + CURRENT_STEP + "站";
+            document.getElementById("nb").disabled = CURRENT_STEP == steps.length - 1 ? "disabled" : null;
+            document.getElementById("pb").disabled = CURRENT_STEP == 0 ? "disabled" : null;
+        }
+       
+        function prev(){
+            CURRENT_STEP--;
+            goToStep(CURRENT_STEP, false);
+        }
+       
+        function next(){
+            CURRENT_STEP++;
+            goToStep(CURRENT_STEP, true);
+        }
+       
+        function reset(){
+            CURRENT_STEP = 0;
+            goToStep(0);
+        }
+       
+        function makeMarker(latlng, msg){
+            var marker = new GMarker(latlng);
+            GEvent.addListener(marker, "visibilitychanged", function(isVisible) {
+                if(isVisible){
+                    map.openInfoWindowHtml(latlng, msg);
+                }
+            });
+            return marker;
+        }
+
+        </script>
+    </head>
+
+    <body onload="initialize()" onunload="GUnload()">
+        <div id="header">
+            <p class="b"><a href="http://wokanxing.info" class="b"><img alt="我看行" src="http://wokanxing.info/blog/wp-content/themes/tarski/images/wokanxing_logo.gif" /></a></p>
+			<p class="c"><a href="http://blog.wokanxing.info/2008/06/dalian-trip-continued">留言点这里</a>，<a href="http://picasaweb.google.com/pizzamx/tbNzsI/photo#map">这里</a>还有一些照片，感兴趣的同学可以看看（点选右上角“卫星”模式观看效果更佳）</p>
+        </div>
+        <div id="wrapper">
+            <div id="map_canvas"></div>
+            <div id="sidebar">
+                <button class="b" id="pb" onclick="prev()">&lt;</button><div id="step_indicator"></div>
+                <button class="b" id="nb" onclick="next()">&gt;</button>
+                <button class="c" onclick="reset();">reset</button>
+                <div id="note"></div>
+            </div>
+        </div>
+		<script type="text/javascript">
+			var pageTracker = _gat._getTracker("UA-102907-4");
+			pageTracker._initData();
+			pageTracker._trackPageview();
+		</script>
+    </body>
+</html>

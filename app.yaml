@@ -1,0 +1,53 @@
+application: wokanblog-hrd
+version: exp
+runtime: python27
+api_version: 1
+threadsafe: false
+
+handlers:
+- url: /static
+  static_dir: static
+  expiration: 1d
+
+- url: /favicon.ico
+  static_files: assets/favicon.ico
+  upload: assets/favicon.ico
+
+- url: /console.*
+  script: script/shell.py
+  login: admin
+
+- url: /remote_api
+  script: $PYTHON_LIB/google/appengine/ext/remote_api/handler.py
+  login: admin
+
+- url: /lazy
+  script: script/ip.py
+
+- url: /wp/.*
+  script: script/wp_main.py
+
+- url: /tinymce/.*
+  script: $PYTHON_LIB/google/appengine/ext/zipserve
+
+- url: /(.*\.html)
+  static_files: static/\1
+  upload: static/.*\.html
+
+- url: /assets
+  static_dir: assets
+
+- url: /admin/.*
+  script: admin.main.application
+  login: admin
+
+- url: /comment/.*
+  script: admin.main.application
+  login: admin
+
+- url: /.*/edit
+  script: admin.main.application
+  login: admin
+
+- url: /.*
+  script: main.application

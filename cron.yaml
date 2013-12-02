@@ -1,0 +1,4 @@
+cron:
+- description: update blogroll
+  url: /admin/updateblogroll
+  schedule: every 6 hours

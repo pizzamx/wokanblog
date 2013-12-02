@@ -1,0 +1,84 @@
+## -*- coding: utf-8 -*-
+			%if pageCount and pageCount > 1:
+			<div id="page_bar_b" class="page_bar clear_bar">
+				%for i in rg:
+					%if i == currentPage:
+					<div class="current_page">${i}</div>
+					%else:
+					<div><a href="${pagePath}page/${i}">${i}</a></div>
+					%endif
+				%endfor
+			</div>
+			%endif
+        </div>
+        <div id="footer" class="clear_bar">
+            %if pageCount:
+            <div id="swc_theme_btn">切换主题</div>
+            <div id="theme_container">
+                <dl><dt>现代</dt><dd><img src="/assets/modern_thumb.jpg" alt="现代"/></dd></dl><dl>
+                <dl><dt>经典蓝天</dt><dd><img src="/assets/classic_thumb.jpg" alt="经典蓝天"/></dd></dl><dl>
+                <dt>星际2</dt><dd><img src="/assets/sc2_thumb.jpg" alt="星际2"/></dd></dl>
+            </div>
+            %endif
+            我看行由国产精品<a href="http://code.google.com/p/wokanblog/">「我看部落格」</a>及舶来品<a href="http://appengine.google.com/"> Google App Engine </a>强力驱动。</div>
+		<script type="text/javascript">
+			var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+			document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+			try {
+				var pageTracker = _gat._getTracker("UA-102907-6");
+				pageTracker._trackPageview();
+			} catch(err) {
+			}
+            $(document).ready(function(){
+                $('#swc_theme_btn').click(function(){
+                    $('#theme_container').toggle();
+                });
+                $('#theme_container img').click(function(){
+                    var loc = window.location.toString();
+                    var src = this.src.substring(this.src.lastIndexOf('/') + 1);
+                    var styname = src.split('_')[0];
+                    window.location = '/theme/' + styname + '/' + loc.substring(loc.indexOf('/', 8));
+                });
+                //控制顶部菜单的出现。不在视野中但向上滚动时，出现
+                $.data(document, "oldScrollTop", $(document).scrollTop());
+                $(window).scroll(function() {
+                    var obj = $('#header');
+                    if(obj){
+                        var _h = obj.outerHeight(true);
+                        var _st = $(document).scrollTop();
+                        if(_st < $.data(document, "oldScrollTop")){ //向上滚动
+                            if(_st <= _h){  
+                                if(obj.css('position') != 'fixed'){
+                                    //还没滚出顶部菜单高度且并非漂浮的话，不要动
+                                }else{
+                                    //还没滚出顶部菜单高度且漂浮的话（例如从下往上进入顶部）
+                                }
+                            }else{
+                                //已经滚出顶部菜单高度的话，固定在顶
+                                if(obj.css('position') != 'fixed'){
+                                    obj.css({
+                                        'position': 'fixed',
+                                        'top': 0,
+                                        'width': '100%'
+                                    });
+                                    obj.next().css({
+                                        'top': _h + 'px'
+                                    });
+                                }
+                            }
+                        }else{
+                            obj.css('position', 'static');
+                            obj.next().css({
+                                'top': 0
+                            });
+                        }
+                        $.data(document, "oldScrollTop", _st);
+                    }
+                });
+            });
+		</script>
+        <!--[if lte IE 6]>
+        	<script src="http://letskillie6.googlecode.com/svn/trunk/letskillie6.zh_CN.pack.js"></script>
+        <![endif]-->        
+    </body>
+</html>

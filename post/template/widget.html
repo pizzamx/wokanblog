@@ -1,0 +1,14 @@
+## -*- coding: utf-8 -*-
+
+%if widgets:
+	<div id="widgets">
+	%if calendar:
+		${calendar.dump()}
+	%endif
+	%if widgets:
+		%for widget in widgets:
+			${widget.dump()}
+		%endfor
+	%endif
+	</div>
+%endif
