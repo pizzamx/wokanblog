@@ -83,6 +83,7 @@ blockquote { background:transparent url(/assets/blockquote.gif) no-repeat scroll
 .styled_day { font-size:35px; }
 .styled_month { font-size:18px; letter-spacing:2px; font-variant: small-caps; }
 .post_meta { margin-bottom: 10px; }
+    .entry .private_meta { margin-bottom: 30px; }
 .post_content { font-size: 14px; }
 	.post_content p { line-height: 1.8em; }
 	.post_content p a, .post_content li a { background: #E6E6DC; padding: 0 3px; }
@@ -178,7 +179,7 @@ blockquote { background:transparent url(/assets/blockquote.gif) no-repeat scroll
     	.c_days .today, .c_days .today .normal_day {  }
     	.c_days .today a, .c_days .today .normal_day { width: 50px; }
     	.c_days .last_day {  }
-    	.c_days .normal_day, .c_days a {display: block; font: 16px/30px Constantia, Georgia; background: #fff; color: #bbb; width: 40px; text-align: center; position: relative; }
+    	.c_days .normal_day, .c_days a {display: block; font: 16px/30px Constantia, Georgia; color: #bbb; width: 40px; text-align: center; position: relative; }
     	.c_days a {  }
     	.c_days .day_with_posts {  }
     	.c_days .post_count { position: absolute; top: 2px; right: 5px; line-height: 12px;}

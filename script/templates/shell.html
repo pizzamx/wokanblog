@@ -84,8 +84,8 @@ a img {
 </p>
 
 <textarea id="output" rows="22" readonly="readonly">
-{{ server_software }}
-Python {{ python_version }}
+${server_software}
+Python ${python_version}
 </textarea>
 
 <form id="form" action="/console/shell.do" method="get">
@@ -96,19 +96,19 @@ Python {{ python_version }}
   <textarea class="prompt" name="statement" id="statement" rows="4"
             onkeypress="return shell.onPromptKeyPress(event);"></textarea>
   </nobr>
-  <input type="hidden" name="session" value="{{ session }}" />
+  <input type="hidden" name="session" value="${session}" />
   <input type="submit" style="display: none" />
 </form>
 
 <p id="ajax-status"></p>
 
 <p id="toolbar">
-{% if user %}
-  <span class="username">{{ user.nickname }}</span>
-  (<a href="{{ logout_url }}">log out</a>)
-{% else %}
-  <a href="{{ login_url }}">log in</a>
-{% endif %}
+%if user:
+  <span class="username">${user.nickname}</span>
+  (<a href="${logout_url}">log out</a>)
+%else:
+  <a href="${login_url}">log in</a>
+%endif
  | Ctrl-Up for history | Shift-Enter for newline
  | <a href="http://code.google.com/appengine/">
       <img src="/static/appengine_button_noborder.gif"

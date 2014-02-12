@@ -17,6 +17,9 @@ handlers:
   script: script/shell.py
   login: admin
 
+- url: /stats.*
+  script: google.appengine.ext.appstats.ui.app
+  
 - url: /remote_api
   script: $PYTHON_LIB/google/appengine/ext/remote_api/handler.py
   login: admin

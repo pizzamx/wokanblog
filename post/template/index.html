@@ -21,10 +21,10 @@
     		</div>
             %if post.isPrivate and not isAdmin:
                 <h1 class="title">Classified Post</h1>
-                <div class="post_meta">
+                <div class="post_meta private_meta">
         	        <span>${post.getCSTDate().strftime('%x %X')}</span>
                     &nbsp;|&nbsp;Privileged users only
-        	    </div>
+        	 </div>
             %else:
                 <h1 class="title"><a href="${post.makeLink()}">${post.title}${'<span class="private_sign">(Private)</span>' if post.isPrivate else ''}</a></h1>
                 <div class="post_meta">
