@@ -17,9 +17,25 @@ indexes:
 
 - kind: Comment
   properties:
+  - name: post
+  - name: date
+    direction: desc
+
+- kind: Comment
+  properties:
+  - name: post
+  - name: status
+
+- kind: Comment
+  properties:
   - name: status
   - name: date
     direction: desc
+
+- kind: Post
+  properties:
+  - name: isPage
+  - name: date
 
 - kind: Post
   properties:

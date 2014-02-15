@@ -41,10 +41,10 @@
     		</div>
     		%for c in post.comment_set.order('date'):
     			%if c.status == 'approved':
-    		        <div class="comment_entry" id="c_${c.key().id()}">
+    		        <div class="comment_entry" id="c_${c.key.id()}">
     			    %if not c.isTrackback:
     		            <div class="comment_meta"><strong>${c.getAuthorLink()}</strong> 在 ${c.getCSTDate().strftime('%x %X')} 说
-    						<span><a href="javascript:quote('${c.authorName}', ${c.key().id()})">回复本条评论</a></span></div>
+    						<span><a href="javascript:quote('${c.authorName}', ${c.key.id()})">回复本条评论</a></span></div>
     			        <div class="comment_content">
     			            <div class="gravatar"><a href="/about-gravatar"><img src="${c.getGravatar()}" alt="gravatar"/></a></div>
     				        ${c.strippedContent()}

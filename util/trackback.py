@@ -29,12 +29,12 @@ from xmlrpclib import ServerProxy, Error
 class TrackbackHandler(webapp.RequestHandler):
     def post(self, y, m, slug):
         logging.debug(self.request.body)
-        post = Post.get_by_key_name('_' + slug)
+        post = Post.get_by_id('_' + slug)
         self.response.headers.add_header('Content-type', 'text/xml')
         
         tb = Comment()
         tb.isTrackback = True
-        tb.post = post.key()
+        tb.post = post.key
         tb.title = urllib.unquote(self.request.get('title'))
         tb.content = urllib.unquote(self.request.get('excerpt'))
         try:

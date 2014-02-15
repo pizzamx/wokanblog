@@ -51,7 +51,7 @@ class QueryBase(webapp2.RequestHandler):
         pageParam = util.POST_PER_PAGE_FOR_HANDSET if self.isFromMobileDevice() else util.POST_PER_PAGE
         pageOffset = 1 if pageOffset is None else int(pageOffset)
         pageCount = int(math.ceil(float(posts.count()) / pageParam))
-        posts = posts.order('-date').fetch(pageParam, (pageOffset - 1) * pageParam)
+        posts = posts.order(-Post.date).fetch(pageParam, offset=(pageOffset - 1) * pageParam)
         #分页按钮的链接前缀（最后要以/结束）
         if re.match(r'.*?/page/\d*', url, re.IGNORECASE):
             path = re.sub(r'(.*?/)page/\d*', r'\1', url)
@@ -103,7 +103,7 @@ class QueryBase(webapp2.RequestHandler):
 
 class Index(QueryBase):
     def get(self, pageOffset=None):
-        allPosts = Post.all().filter('isPage = ', False)
+        allPosts = Post.query(Post.isPage == False)
         if self.isFromMobileDevice():
             self.dumpMultiPage(allPosts, pageOffset, 'mindex.html')
         else:
@@ -113,11 +113,12 @@ class Single(QueryBase):
     def get(self, y, m, slug):
         #sure not empty?
         slug = unicode(urllib.unquote(slug), 'utf-8')
-        post = Post.get_by_key_name('_' + slug)
+        post = Post.get_by_id('_' + slug)
+        cs = Comment.query(Comment.post == post.key).order(+Comment.date)
         if not post or post.isPrivate and not users.is_current_user_admin():
             self.fof()
         else:
-            (pp, np) = self.getAdjTitles(post.key())
+            (pp, np) = self.getAdjTitles(post.key)
             url = self.request.url
             baseUrl = url[:url.find('/', 8)]    #8 for https
             rc = self.request.cookies
@@ -132,14 +133,14 @@ class Single(QueryBase):
                 template = self.getTemplate('msingle.html')
             else:
                 template = self.getTemplate('single.html')
-            self.response.write(template.render_unicode(baseUrl=baseUrl, isAdmin=users.is_current_user_admin(), post=post, pp=pp, np=np, cookies=cd, theme=theme, single=True))
+            self.response.write(template.render_unicode(baseUrl=baseUrl, isAdmin=users.is_current_user_admin(), post=post, cs=cs, pp=pp, np=np, cookies=cd, theme=theme, single=True))
             
     @memcached(-1)
     def getAllKeys(self):
         keys = []
-        allPosts = Post.all().filter('isPage = ', False).filter('isPrivate = ', False).order('-date')
+        allPosts = Post.query(Post.isPage == False, Post.isPrivate == False).order(-Post.date)
         for p in allPosts:
-            keys.append(p.key())
+            keys.append(p.key)
         return keys
     
     def getAdjTitles(self, key):
@@ -153,16 +154,17 @@ class Single(QueryBase):
                 found = True
                 continue
             pk = k
-        np = None if nk is None else db.get(nk)
-        pp = None if pk is None else db.get(pk)
+        np = None if nk is None else nk.get()
+        pp = None if pk is None else pk.get()
         return (pp, np)
             
 class Page(QueryBase):
     def get(self, slug):
-        post = Post.get_by_key_name('_' + slug)
+        post = Post.get_by_id('_' + slug)
         if not post:
             self.fof()
         else:
+            cs = Comment.query(Comment.post == post.key).order(+Comment.date)
             url = self.request.url
             baseUrl = url[:url.find('/', 8)]    #8 for https
             cookies = self.request.cookies
@@ -174,7 +176,7 @@ class Page(QueryBase):
                 template = self.getTemplate('msingle.html')
             else:
                 template = self.getTemplate('single.html')
-            self.response.write(template.render_unicode(baseUrl=baseUrl, isAdmin=users.is_current_user_admin(), post=post, redirectUrl=url, cookies=cookies, theme=theme, page=True))
+            self.response.write(template.render_unicode(baseUrl=baseUrl, isAdmin=users.is_current_user_admin(), cs=cs, post=post, redirectUrl=url, cookies=cookies, theme=theme, page=True))
             
 class ServeImage(webapp2.RequestHandler):
     def get(self, name):
@@ -183,7 +185,7 @@ class ServeImage(webapp2.RequestHandler):
             referer = self.request.headers['Referer']
             if referer:
                 if re.search(r'https?:\/\/.*?\.wokanxing\.info.*', referer, re.I) or referer.find('appspot.com') != -1:
-                    img = Image.get_by_key_name('_' + name)
+                    img = Image.get_by_id('_' + name)
                     if img:
                         self.response.headers['Content-Type'] = 'image/%s' % name[name.rfind('.') + 1:]
                         self.response.write(img.data)
@@ -206,9 +208,9 @@ class Feed(QueryBase):
     @memcached(-1)
     def queryPostFeed(self):
         now = datetime.now().replace(tzinfo=CST()).isoformat()
-        return Post.all().filter('isPage = ', False).filter('isPrivate = ', False).order('-date').fetch(10), now
+        return Post.query(Post.isPage == False, Post.isPrivate == False).order(-Post.date).fetch(10), now
 
     @memcached(-1)
     def queryCommentFeed(self):
         now = datetime.now().replace(tzinfo=CST()).isoformat()
-        return Comment.all().filter('status =', 'approved').order('-date').fetch(10), now
+        return Comment.query(Comment.status == 'approved').order(+Comment.date).fetch(10), now

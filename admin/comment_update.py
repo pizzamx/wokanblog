@@ -37,7 +37,7 @@ api = Akismet(agent='wokanblog')
 class NewComment(webapp.RequestHandler):
     def post(self, slug):
         slug = unicode(urllib.unquote(slug), 'utf-8')
-        k = Post.get_by_key_name('_' + slug).key()
+        k = Post.get_by_id('_' + slug).key
         
         name, email, url, content, captcha = (self.request.get(key) for key in ['name', 'email', 'url', 'content', 'captcha'])
         
@@ -110,10 +110,10 @@ class NewComment(webapp.RequestHandler):
 class ListComments(webapp.RequestHandler):
     def get(self, page):
         SIZE = 20
-        comments = Comment.all()
+        comments = Comment.query()
         page = 1 if not page else int(page)
         pageCount = int(math.ceil(float(comments.count()) / SIZE))
-        comments = comments.order('-date').fetch(SIZE, (page - 1) * SIZE)
+        comments = comments.order(+Comment.date).fetch(SIZE, offset=(page - 1) * SIZE)
         mylookup = TemplateLookup(directories=[os.path.join(os.path.dirname(__file__), 'template')])
         template = mylookup.get_template('manage_comments.html')
         #分页

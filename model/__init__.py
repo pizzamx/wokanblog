@@ -19,7 +19,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 
-from google.appengine.ext import db
+from google.appengine.ext import ndb
 from google.appengine.api.datastore_errors import BadValueError
 
 from datetime import tzinfo, timedelta, datetime
@@ -37,10 +37,10 @@ class CST(tzinfo):
     def dst(self, dt):
         return timedelta(0)
         
-class UrlProperty(db.Property):
-    def validate(self, value):
+class UrlProperty(ndb.StringProperty):
+    def _validate(self, value):
         if value and value.strip() != '':
-            if not value.lower().startswith('http://'):
+            if not value.lower().startswith(('http://', 'https://')):
                 value = 'http://' + value
             scheme, domain, path, params, query, fragment = urlparse.urlparse(value)
             if not domain:
@@ -49,9 +49,9 @@ class UrlProperty(db.Property):
 
     data_type = unicode
     
-class EmailProperty(db.Property):
+class EmailProperty(ndb.StringProperty):
     #自带的那个居然不验证....
-    def validate(self, value):
+    def _validate(self, value):
         #@see is_email in formatting.php, wordpress
         if value and value.strip() != '':
             if len(value) < 6:
@@ -65,16 +65,16 @@ class EmailProperty(db.Property):
 
     data_type = unicode
 
-class Post(db.Model):
-    #author = db.UserProperty()
-    title = db.StringProperty()
-    slug = db.StringProperty()
-    content = db.TextProperty()
-    tags = db.ListProperty(db.Key)
-    date = db.DateTimeProperty(auto_now_add=True)
-    wpId = db.IntegerProperty()
-    isPage = db.BooleanProperty(default=False)
-    isPrivate = db.BooleanProperty(default=False)
+class Post(ndb.Model):
+    #author = ndb.UserProperty()
+    title = ndb.StringProperty()
+    slug = ndb.StringProperty()
+    content = ndb.TextProperty()
+    tags = ndb.KeyProperty(repeated=True)
+    date = ndb.DateTimeProperty(auto_now_add=True)
+    wpId = ndb.IntegerProperty()
+    isPage = ndb.BooleanProperty(default=False)
+    isPrivate = ndb.BooleanProperty(default=False)
     
     def getCSTDate(self):
         #难道dev server自动添加的时间带本地时区？这和文档冲突啊
@@ -89,12 +89,12 @@ class Post(db.Model):
     def getTagLinks(self):
         tagLinks = []
         for tagKey in self.tags:
-            tag = Tag.get(tagKey)
+            tag = tagKey.get()
             tagLinks.append('<a href="/tag/%s">%s</a>' % (tag.name, tag.name))
         return string.join(tagLinks, ', ')
     
     def getTagStr(self):
-        return string.join(((Tag.get(k)).name for k in self.tags), ', ')
+        return string.join(((k.get()).name for k in self.tags), ', ')
 
     def makeLink(self):
         if self.isPage:
@@ -108,7 +108,7 @@ class Post(db.Model):
         
     def getCommentCount(self):
         n = 0
-        for c in self.comment_set:
+        for c in Comment.query(Comment.post == self.key).fetch(projection=Comment.status):
             if c.status == 'approved':
                 n += 1
         return n
@@ -125,17 +125,17 @@ class Post(db.Model):
         else:
             return t[0]
     
-class Comment(db.Model):
+class Comment(ndb.Model):
     authorEmail = EmailProperty()
-    authorName = db.StringProperty()
+    authorName = ndb.StringProperty()
     #url should be empty-allowed so no LinkProperty...maybe Expando?
     url = UrlProperty()
-    post = db.ReferenceProperty(Post)
-    content = db.TextProperty()
-    ip = db.StringProperty()
-    isTrackback = db.BooleanProperty()
-    date = db.DateTimeProperty(auto_now_add=True)
-    status = db.StringProperty()    #'approved' or 'spam'
+    post = ndb.KeyProperty(kind=Post)
+    content = ndb.TextProperty()
+    ip = ndb.StringProperty()
+    isTrackback = ndb.BooleanProperty(default=False)
+    date = ndb.DateTimeProperty(auto_now_add=True)
+    status = ndb.StringProperty()    #'approved' or 'spam'
     
     def getCSTDate(self):
         #return self.date.replace(tzinfo=CST())
@@ -151,25 +151,25 @@ class Comment(db.Model):
             return self.authorName
         
     def makeLink(self):
-        return '%s#c_%s' % (self.post.makeLink(), self.key().id())
+        return '%s#c_%s' % (self.post.get().makeLink(), self.key.id())
 
     @filter_html
     def strippedContent(self):
         #return self.content
         return re.sub(r'(?ms)\[quote.*?\](.*?)\[/quote\]', r'<blockquote>\1</blockquote>', self.content)
             
-class Tag(db.Model):
-    name = db.StringProperty()
+class Tag(ndb.Model):
+    name = ndb.StringProperty()
     
-class Image(db.Model):
-    src = db.StringProperty()
-    name= db.StringProperty()
-    data = db.BlobProperty()
+class Image(ndb.Model):
+    src = ndb.StringProperty()
+    name= ndb.StringProperty()
+    data = ndb.BlobProperty()
     
     def fetch(self):
         try:
             stream = urllib2.urlopen(self.src)
-            self.data = db.Blob(stream.read())
+            self.data = ndb.Blob(stream.read())
             stream.close()
             self.put()
             return True
@@ -185,18 +185,18 @@ class Image(db.Model):
     def height(self):
         pass
         
-class Blogroll(db.Model):
-    name = db.StringProperty()
-    desc = db.StringProperty(required=False, default='')
+class Blogroll(ndb.Model):
+    name = ndb.StringProperty()
+    desc = ndb.StringProperty(required=False, default='')
     blogUrl = UrlProperty()
     feedUrl = UrlProperty()
-    lastUpdate = db.DateTimeProperty(default=datetime(2005, 1, 1))
-    lastTitle = db.StringProperty(default='')
+    lastUpdate = ndb.DateTimeProperty(default=datetime(2005, 1, 1))
+    lastTitle = ndb.StringProperty(default='')
 
     def getCSTDate(self):
         return self.date.replace(tzinfo=UTC()).astimezone(CST())
         #return self.lastUpdate.replace(tzinfo=CST())
 
-class SharedCounter(db.Model):
-    name = db.StringProperty()
-    count = db.IntegerProperty(required=True, default=0)
+class SharedCounter(ndb.Model):
+    name = ndb.StringProperty()
+    count = ndb.IntegerProperty(required=True, default=0)
