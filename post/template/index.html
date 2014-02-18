@@ -1,18 +1,18 @@
 ## -*- coding: utf-8 -*-
 <%include file="header.html"/>
 <div id="wrapper">
-%if pageCount > 1:
-    <div class="page_bar">
-    	%for i in rg:
-    		%if i == currentPage:
-    		<div class="current_page">${i}</div>
-    		%else:
-    		<div><a href="${pagePath}page/${i}">${i}</a></div>
-    		%endif
-    	%endfor
+    <div class="post_nav">
+        %if prev_page != '':
+                <span>&lt;&lt;&lt;</span><a href="${pagePath}page/prev/${prev_page}">最近的文章  </a>
+	%endif
+	%if prev_page != '' and next_page != '':
+		&nbsp;&nbsp;&nbsp;&nbsp;
+        %endif
+        %if next_page != '':
+            <a href="${pagePath}page/next/${next_page}">  较早的文章</a><span>&gt;&gt;&gt;</span>
+	%endif
     </div>
-%endif
-    <div id="content" class="multi float_right">
+    <div id="content" class="clear_bar">
     %for post in posts:
         <div class="entry clear_bar">
     		<div class="styled_date">

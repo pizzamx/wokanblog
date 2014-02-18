@@ -159,7 +159,6 @@ class TagCloud(object):
         posts = Post.query().fetch(projection=[Post.tags])
         result = {}
         for p in posts:
-            print p
             for tkey in p.tags:
                 tname = tkey.get().name
                 if tname in result:

@@ -1,4 +1,17 @@
 ## -*- coding: utf-8 -*-
+	%if prev_page and prev_page != '' or next_page and next_page != '':
+        <div class="post_nav post_nav_b">
+            %if prev_page != '':
+                <span>&lt;&lt;&lt;</span><a href="${pagePath}page/prev/${prev_page}">最近的文章  </a>
+            %endif
+            %if prev_page != '' and next_page != '':
+                &nbsp;&nbsp;&nbsp;&nbsp;
+            %endif
+            %if next_page != '':
+                <a href="${pagePath}page/next/${next_page}">  较早的文章</a><span>&gt;&gt;&gt;</span>
+            %endif
+            </div>
+        %endif
 			%if pageCount and pageCount > 1:
 			<div id="page_bar_b" class="page_bar clear_bar">
 				%for i in rg:

@@ -13,23 +13,23 @@ indexes:
 - kind: Comment
   properties:
   - name: post
-  - name: date
-
-- kind: Comment
-  properties:
-  - name: post
-  - name: date
-    direction: desc
-
-- kind: Comment
-  properties:
-  - name: post
   - name: status
 
 - kind: Comment
   properties:
   - name: status
   - name: date
+
+- kind: M
+  properties:
+  - name: __key__
+    direction: desc
+
+- kind: M
+  properties:
+  - name: b
+    direction: desc
+  - name: __key__
     direction: desc
 
 - kind: Post
@@ -40,18 +40,5 @@ indexes:
 - kind: Post
   properties:
   - name: isPage
-  - name: date
-    direction: desc
-
-- kind: Post
-  properties:
-  - name: isPage
-  - name: isPrivate
-  - name: date
-    direction: desc
-
-- kind: Post
-  properties:
-  - name: tags
   - name: date
     direction: desc
