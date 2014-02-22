@@ -2,12 +2,6 @@
 <%include file="header.html"/>
 <div id="wrapper">
     <div class="post_nav">
-        %if prev_page != '':
-                <span>&lt;&lt;&lt;</span><a href="${pagePath}page/prev/${prev_page}">最近的文章  </a>
-	%endif
-	%if prev_page != '' and next_page != '':
-		&nbsp;&nbsp;&nbsp;&nbsp;
-        %endif
         %if next_page != '':
             <a href="${pagePath}page/next/${next_page}">  较早的文章</a><span>&gt;&gt;&gt;</span>
 	%endif
@@ -34,8 +28,7 @@
         			%else:
         				${post.getCommentCount()}条评论
         			%endif
-        			</a></span>&nbsp;|&nbsp;关键词：
-        	        <span>${post.getTagLinks()}</span>
+        			</a></span>
                     %if isAdmin:
                         &nbsp;|&nbsp;<span><a href="${post.getEditLink()}">编辑</a></span>
                     %endif

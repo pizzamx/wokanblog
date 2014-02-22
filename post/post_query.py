@@ -53,12 +53,8 @@ class QueryBase(webapp2.RequestHandler):
 
         if drct == 'next':
             cursor = Cursor(urlsafe=page_cursor)
-        """    
-        elif drct == 'prev':
-            cursor = Cursor(urlsafe=page_cursor).reversed()
-            page_size += 1
-        """
-        else:   #没有传这个参数说明是首页（第一页）
+        else:
+            #没有传这个参数说明是首页（第一页）
             cursor = None
             
         posts, next_cursor, more = posts.order(-Post.date).fetch_page(page_size, start_cursor=cursor)
@@ -66,12 +62,10 @@ class QueryBase(webapp2.RequestHandler):
         if drct == 'next':
             next_page = next_cursor.urlsafe() if more else ''
             prev_page = cursor.urlsafe()
-        """
-        elif drct == 'prev':
-            next_page = next_cursor.urlsafe()
-            prev_page = cursor.urlsafe() if more else ''
-            posts = posts[1:]
-        """
+        #elif drct == 'prev':
+        #    next_page = next_cursor.urlsafe()
+        #    prev_page = cursor.urlsafe() if more else ''
+        #    posts = posts[1:]
         else:
             next_page = next_cursor.urlsafe() if more else ''
             prev_page = ''
@@ -108,7 +102,7 @@ class QueryBase(webapp2.RequestHandler):
             'posts': posts, 
             'isAdmin': users.is_current_user_admin(), 
             'calendar': widget.Calendar(path), 
-            'widgets': [widget.SearchBox(), widget.BlogUpdates(), widget.RecentComment(), widget.TagCloud()], 
+            'widgets': [widget.SearchBox(), widget.BlogUpdates(), widget.RecentComment()],  #, widget.TagCloud()
             'theme': theme,
             'next_page': next_page,
             'prev_page': prev_page,
@@ -153,7 +147,7 @@ class Single(QueryBase):
         #sure not empty?
         slug = unicode(urllib.unquote(slug), 'utf-8')
         post = Post.get_by_id('_' + slug)
-        cs = Comment.query(Comment.post == post.key).order(+Comment.date)
+        cs = Comment.query(Comment.post == post.key, Comment.status == 'approved').order(+Comment.date)
         if not post or post.isPrivate and not users.is_current_user_admin():
             self.fof()
         else:
@@ -191,7 +185,7 @@ class Page(QueryBase):
         if not post:
             self.fof()
         else:
-            cs = Comment.query(Comment.post == post.key).order(+Comment.date)
+            cs = Comment.query(Comment.post == post.key, Comment.status == 'approved').order(+Comment.date)
             url = self.request.url
             baseUrl = url[:url.find('/', 8)]    #8 for https
             cookies = self.request.cookies
@@ -240,4 +234,4 @@ class Feed(QueryBase):
     @memcached(-1)
     def queryCommentFeed(self):
         now = datetime.now().replace(tzinfo=CST()).isoformat()
-        return Comment.query(Comment.status == 'approved').order(+Comment.date).fetch(10), now
+        return Comment.query(Comment.status == 'approved').order(-Comment.date).fetch(10), now

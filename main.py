@@ -29,10 +29,10 @@ application = webapp2.WSGIApplication([
     (r'/page/(next|prev)/(\S*)', post_query.Index),
     (r'/img/([^/]+)/?', post_query.ServeImage),
     ('/(comments/)?feed', post_query.Feed),
-    (r'/tag/(.*?)/page/(\s*)', archive_query.TagArchive),
+    (r'/tag/(.*?)/page/(next|prev)/(\S*)', archive_query.TagArchive),
     (r'/tag/([^/]+)/?', archive_query.TagArchive),
     (r'/theme/(.*?)/(.*?)', theme.SetTheme),
-    (r'/(\d{4})/(?:(\d{1,2})/)?(?:(\d{1,2})/)?(?:page/(\s*))?', archive_query.DateRangeArchive),
+    (r'/(\d{4})/(?:(\d{1,2})/)?(?:(\d{1,2})/)?(?:page/(next|prev)/(\S*))?', archive_query.DateRangeArchive),
     (r'/(\d{4})/(\d{1,2})/([^/]+)/?', post_query.Single),
     (r'/(\d{4})/(\d{2})/(.*?)/trackback', trackback.TrackbackHandler),
     (r'/(.*)', post_query.Page)

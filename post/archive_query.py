@@ -32,7 +32,7 @@ import os, urllib, math
 
 
 class TagArchive(post_query.QueryBase):
-    def get(self, tagName, pageOffset=None):
+    def get(self, tagName, drct=None, page_cursor=None):
         tagName = unicode(urllib.unquote(tagName), 'utf-8')
         tag = Tag.get_by_id('_' + tagName)
         if not tag:
@@ -40,10 +40,10 @@ class TagArchive(post_query.QueryBase):
         else:
             posts = Post.query(Post.tags == tag.key).order(-Post.date)
             self.title = tagName
-            self.dumpMultiPage(posts, pageOffset, 'index.html')
+            self.dumpMultiPage(posts, drct, page_cursor, 'index.html')
 
 class DateRangeArchive(post_query.QueryBase):
-    def get(self, year, month, day, pageOffset):
+    def get(self, year, month, day, drct=None, page_cursor=None):
         year = int(year)
         if day:
             the_date = datetime(year, int(month), int(day))
@@ -61,4 +61,4 @@ class DateRangeArchive(post_query.QueryBase):
         if posts.count() == 0:
             self.fof()
         else:
-            self.dumpMultiPage(posts, pageOffset, 'index.html')
+            self.dumpMultiPage(posts, drct, page_cursor, 'index.html')

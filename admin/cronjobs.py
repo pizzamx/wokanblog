@@ -46,10 +46,10 @@ class UpdateblogrollCronJob(webapp.RequestHandler):
         if not start:
             start = 0
             
-        brs = Blogroll.all().fetch(batch_size, start)
+        brs = Blogroll.query().fetch(batch_size, offset=start)
         start += batch_size
             
-        if start >= Blogroll.all().count():
+        if start >= Blogroll.query().count():
             start = 0
             
         memcache.set('blogroll_update_start', start)

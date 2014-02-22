@@ -130,7 +130,7 @@ class RecentComment(object):
     
     @memcached(-1)
     def getLatestComments(self):
-        return Comment.query(Comment.status == 'approved').order(+Comment.date).fetch(10)
+        return Comment.query(Comment.status == 'approved').order(-Comment.date).fetch(10)
     
 class TagCloud(object):
     def dump(self):

@@ -18,10 +18,6 @@
     	<h1 class="title">${post.title}${'<span class="private_sign">(Private Post)</span>' if post.isPrivate else ''}</h1>
     	<div class="post_meta">
     		<span>${post.getCSTDate().strftime('%x %X')}</span>
-            %if not page:
-                &nbsp;|&nbsp;关键词：
-        		<span>${post.getTagLinks()}</span>
-            %endif
             %if isAdmin:
                 &nbsp;|&nbsp;<span><a href="${post.getEditLink()}">编辑</a></span>
             %endif
@@ -44,7 +40,6 @@
     		</div>
                 -->
     		%for c in cs:
-    			%if c.status == 'approved':
     		        <div class="comment_entry" id="c_${c.key.id()}">
     			    %if not c.isTrackback:
     		            <div class="comment_meta"><strong>${c.getAuthorLink()}</strong> 在 ${c.getCSTDate().strftime('%x %X')} 说
@@ -61,7 +56,6 @@
     				    </div>
     			    %endif
     		        </div>
-    			%endif
     		%endfor
     	</div>
     	<div id="response" class="clear_bar">
