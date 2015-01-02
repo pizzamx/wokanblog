@@ -6,27 +6,8 @@
             %endif
             </div>
         %endif
-			%if pageCount and pageCount > 1:
-			<div id="page_bar_b" class="page_bar clear_bar">
-				%for i in rg:
-					%if i == currentPage:
-					<div class="current_page">${i}</div>
-					%else:
-					<div><a href="${pagePath}page/${i}">${i}</a></div>
-					%endif
-				%endfor
-			</div>
-			%endif
         </div>
         <div id="footer" class="clear_bar">
-            %if pageCount:
-            <!--div id="swc_theme_btn">切换主题</div>
-            <div id="theme_container">
-                <dl><dt>现代</dt><dd><img src="/assets/modern_thumb.jpg" alt="现代"/></dd></dl><dl>
-                <dl><dt>经典蓝天</dt><dd><img src="/assets/classic_thumb.jpg" alt="经典蓝天"/></dd></dl><dl>
-                <dt>星际2</dt><dd><img src="/assets/sc2_thumb.jpg" alt="星际2"/></dd></dl>
-            </div-->
-            %endif
             我看行由国产精品<a href="http://code.google.com/p/wokanblog/">「我看部落格」</a>及舶来品<a href="http://appengine.google.com/"> Google App Engine </a>强力驱动。</div>
             <script>
             (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){

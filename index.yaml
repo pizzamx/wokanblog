@@ -37,6 +37,12 @@ indexes:
   - name: date
     direction: desc
 
+- kind: Comment
+  ancestor: yes
+  properties:
+  - name: status
+  - name: date
+
 - kind: Post
   properties:
   - name: isPage

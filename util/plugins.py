@@ -40,9 +40,8 @@ def add_html_filter(tag_name, filter_func, is_empty):
 def parse_shortcode_attr(m, is_empty):
     attrs = defaultdict(lambda: '')
     att_str = m.group(1).strip()
-    for pair in att_str.split():
-        k, v = pair.split('=', 1)
-        attrs[k] = v[1:-1]
+    for (k, v) in re.findall(r'(\w+)="(.*?)"', att_str):
+        attrs[k] = v
     return attrs, '' if is_empty else m.group(2)
 
 def parse_shortcode(html, name, filter_func, is_empty):
@@ -52,9 +51,12 @@ def parse_shortcode(html, name, filter_func, is_empty):
         attrs, content = parse_shortcode_attr(m, is_empty)
         return filter_func(attrs) if is_empty else filter_func(attrs, content)
     if is_empty:
-        return re.sub(r'(?mis)\[%s(.*?)/\]' % name, replace_func, html)
+        #FIXME: 字符问题在这里
+        #logging.warning(html)
+        #logging.warning(re.sub(ur'(?misu)\[%s(.*?)/\]' % name, replace_func, html))
+        return re.sub(r'(?misu)\[%s(.*?)/\]' % name, replace_func, html)
     else:
-        return re.sub(r'(?mis)\[%s(.*?)\](.*?)(?:\[/%s\])' % (name, name), replace_func, html)
+        return re.sub(r'(?misu)\[%s(.*?)\](.*?)(?:\[/%s\])' % (name, name), replace_func, html)
 
 def make_caption(attrs, content):
     "生成图片的像框，带caption"

@@ -23,7 +23,7 @@ from google.appengine.ext import webapp
 from google.appengine.api import memcache
 
 from util import feedparser
-from model import Blogroll
+from model import Blogroll, Comment
 
 from datetime import datetime
 
@@ -71,3 +71,10 @@ class UpdateblogrollCronJob(webapp.RequestHandler):
                     br.put()
             except Exception, e:
                 logging.debug('Error occurred whild reading %s: %s' % (br.feedUrl, e))
+
+
+class DSCronJob(webapp.RequestHandler):
+    def get(self):
+        cs=Comment.query().filter(Comment.isTrackback == True).fetch(100)
+        for c in cs:
+            c.key.delete()

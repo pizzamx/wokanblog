@@ -83,7 +83,7 @@ blockquote { background:transparent url(/assets/blockquote.gif) no-repeat scroll
 .styled_month { font-size:14px; letter-spacing:2px; font-variant: small-caps; }
 .post_meta { border-top: 1px solid #ccc; margin-bottom: 10px; }
 .post_content { font-size: 14px; }
-	.post_content p { line-height: 1.8em; text-indent: 2em; }
+	.post_content p { line-height: 1.8em; }
 	.post_content p a, .post_content li a { background: #eee; }
 	.post_content p a:hover, .post_content li a:hover { background: #8FBF60; color: #fff; }
 	.post_content ol { list-style: decimal; margin-bottom: 1em; }

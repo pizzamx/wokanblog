@@ -107,11 +107,15 @@ class Post(ndb.Model):
         return '/%d/%s/%s/edit' % (self.date.year, str(self.date.month).rjust(2, '0'), self.slug)
         
     def getCommentCount(self):
+        #FIXME: 这个数字不准……因为以前的评论不是 ndb 创建的……如果要重建一遍的话记得考虑引用关系（复杂……
+        return Comment.query(ancestor=self.key).count()
+        """
         n = 0
-        for c in Comment.query(Comment.post == self.key).fetch(projection=Comment.status):
+        for c in Comment.query(ancestor=self.key).fetch(projection=Comment.status):
             if c.status == 'approved':
                 n += 1
         return n
+        """
 
     @filter_html
     def strippedContent(self):
@@ -151,7 +155,7 @@ class Comment(ndb.Model):
             return self.authorName
         
     def makeLink(self):
-        return '%s#c_%s' % (self.post.get().makeLink(), self.key.id())
+        return '%s#c_%s' % (self.key.parent().get().makeLink(), self.key.id())
 
     @filter_html
     def strippedContent(self):

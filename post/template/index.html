@@ -21,18 +21,11 @@
         	 </div>
             %else:
                 <h1 class="title"><a href="${post.makeLink()}">${post.title}${'<span class="private_sign">(Private)</span>' if post.isPrivate else ''}</a></h1>
-                <div class="post_meta">
-        	        <span><a href="${post.makeLink()}#comments">
-        			%if post.getCommentCount() == 0:
-        				没人理我:(
-        			%else:
-        				${post.getCommentCount()}条评论
-        			%endif
-        			</a></span>
                     %if isAdmin:
-                        &nbsp;|&nbsp;<span><a href="${post.getEditLink()}">编辑</a></span>
+                    <div class="post_meta">
+                            <span><a href="${post.getEditLink()}">编辑</a></span>
+            	</div>
                     %endif
-        	</div>
                 <div class="post_content clear_bar">${post.briefContent()}</div>
                 <!--
                     <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"

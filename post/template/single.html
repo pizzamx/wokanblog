@@ -31,14 +31,6 @@
     		%endif
             <div class="bshare-custom" style="float:right"><a title="分享到QQ空间" class="bshare-qzone"></a><a title="分享到新浪微博" class="bshare-sinaminiblog"></a><a title="分享到人人网" class="bshare-renren"></a><a title="分享到腾讯微博" class="bshare-qqmb"></a><a title="更多平台" class="bshare-more bshare-more-icon more-style-addthis"></a><span class="BSHARE_COUNT bshare-share-count">0</span></div>
             <script type="text/javascript" charset="utf-8" src="http://static.bshare.cn/b/buttonLite.js#style=-1&amp;uuid=&amp;pophcol=2&amp;lang=zh"></script><script type="text/javascript" charset="utf-8" src="http://static.bshare.cn/b/bshareC0.js"></script>
-            <!--
-    		<div class="trackback_link clear_bar">
-    			引用通告地址<br/>
-    			<a href="${baseUrl}${post.makeLink()}/trackback">
-    				${baseUrl}${post.makeLink()}/trackback
-    			</a>
-    		</div>
-                -->
     		%for c in cs:
     		        <div class="comment_entry" id="c_${c.key.id()}">
     			    %if not c.isTrackback:
@@ -66,7 +58,7 @@
     			Email: <input type="text" name="email" value="${cookies['c_email']}" />&nbsp;&nbsp;
     			URL: <input type="text" name="url" value="${cookies['c_url']}" /></div>
     		    <div><textarea name="content" id="comment_content" rows="6" cols="60"></textarea></div>
-                <div id="captcha">请回答：美国的民主是真正的民主吗？（答案写不是两个字）<input type="text" id="captcha_txt" name="captcha" value="${cookies['c_captcha']}" /></div>
+                <div id="captcha">请输入「折腾」的拼音，小写，中间不带空格<input type="text" id="captcha_txt" name="captcha" value="${cookies['c_captcha']}" /></div>
     		    <div class="button"><input type="submit" value="发布"></div>
     		</form>
     	</div>

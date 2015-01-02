@@ -147,7 +147,7 @@ class Single(QueryBase):
         #sure not empty?
         slug = unicode(urllib.unquote(slug), 'utf-8')
         post = Post.get_by_id('_' + slug)
-        cs = Comment.query(Comment.post == post.key, Comment.status == 'approved').order(+Comment.date)
+        cs = Comment.query(ancestor=post.key).filter(Comment.status == 'approved').order(+Comment.date)
         if not post or post.isPrivate and not users.is_current_user_admin():
             self.fof()
         else:
@@ -185,7 +185,7 @@ class Page(QueryBase):
         if not post:
             self.fof()
         else:
-            cs = Comment.query(Comment.post == post.key, Comment.status == 'approved').order(+Comment.date)
+            cs = Comment.query(ancestor=post.key).filter(Comment.status == 'approved').order(+Comment.date)
             url = self.request.url
             baseUrl = url[:url.find('/', 8)]    #8 for https
             cookies = self.request.cookies

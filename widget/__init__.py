@@ -124,7 +124,7 @@ class RecentComment(object):
     def dump(self):
         html = u'<h2>最新的留言</h2><ul id="recent_comments">'
         for c in self.getLatestComments():
-            html += '<li><a href="%s">%s</a> (%s)</li>' % (c.makeLink(), c.post.get().title, c.getAuthorLink())
+            html += '<li><a href="%s">%s</a> (%s)</li>' % (c.makeLink(), c.key.parent().get().title, c.getAuthorLink())
         html += '</ul>'
         return html
     

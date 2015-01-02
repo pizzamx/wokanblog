@@ -44,8 +44,8 @@ class NewComment(webapp.RequestHandler):
         try:
             if content.strip() == '':
                 raise BadValueError('Content should not be empty')
-            c = Comment()
-            c.post = k
+            c = Comment(parent=k)
+            #c.post = k
             c.authorName = name
             c.authorEmail = email
             c.url = url
@@ -53,7 +53,7 @@ class NewComment(webapp.RequestHandler):
             c.content = content.replace('\n', '<br/>')
             c.status = 'approved'
 
-            if captcha != u'\u4e0d\u662f':
+            if captcha != 'zheteng':
                 logging.info(u'截获垃圾，发自：%s，内容：%s' % (name, content))
                 c.status = 'spam'
                 #c.put()    //20131201: dont't put
@@ -64,7 +64,7 @@ class NewComment(webapp.RequestHandler):
                 msg = 'name: %s\nmail: %s\nurl: %s\ncontent: %s\n' % (name, email, url, content)
                 mail.send_mail(sender_address, user_address, subject, msg)
                 
-                self.response.out.write('都说了写 ** 不是 ** 两个字了！')
+                self.response.out.write('请输入「折腾」的拼音，小写，中间不带空格')
                 return
             """
             try:

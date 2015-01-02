@@ -13,6 +13,10 @@ handlers:
   static_files: assets/favicon.ico
   upload: assets/favicon.ico
 
+- url: /robots.txt
+  static_files: assets/robots.txt
+  upload: assets/robots.txt
+
 - url: /console.*
   script: script/shell.py
   login: admin
@@ -46,7 +50,6 @@ handlers:
 
 - url: /comment/.*
   script: admin.main.application
-  login: admin
 
 - url: /.*/edit
   script: admin.main.application

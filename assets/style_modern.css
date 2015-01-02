@@ -77,7 +77,7 @@ blockquote { background:transparent url(/assets/blockquote.gif) no-repeat scroll
 #panel { width: 260px; float: left; }
 */
 .entry { margin-bottom: 10px; }
-.title { font: small-caps 32px/120% "Hiragino Sans GB", "Microsoft YaHei", YaHei, sans-serif; padding: 0 0 8px; } 
+.title { font: small-caps 32px/120% "Hiragino Sans GB", "Microsoft YaHei", YaHei, sans-serif; padding: 0 0 8px; line-height:180%; } 
 	.multi .title, .multi .post_meta {  }
     .title .private_sign { color: #f00; }
 .styled_date { float:right; text-align:center; font-family: "Poiret One", sans-serif; line-height:180%; margin-right:8px; } 
@@ -86,7 +86,7 @@ blockquote { background:transparent url(/assets/blockquote.gif) no-repeat scroll
 .styled_month { font-size:18px; letter-spacing:2px; font-variant: small-caps; }
 .post_meta { margin-bottom: 10px; }
     .entry .private_meta { margin-bottom: 30px; }
-.post_content { font-size: 14px; }
+.post_content { font-size: 16px; }
 	.post_content p { line-height: 1.8em; }
 	.post_content p a, .post_content li a { background: #E6E6DC; padding: 0 3px; }
 	.post_content p a:hover, .post_content li a:hover { background: #00628B; color: #E6E6DC; }

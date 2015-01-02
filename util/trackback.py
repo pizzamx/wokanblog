@@ -51,22 +51,9 @@ class TrackbackHandler(webapp.RequestHandler):
         tb.authorName = urllib.unquote(self.request.get('blog_name'))
         tb.authorEmail = 'test@example.com' #TODO: better one?
         tb.ip = self.request.remote_addr
-        tb.put()
+        #5/25/14: 暂时停止接收！
+        #tb.put()
 
-        """
-        wpSrv = ServerProxy("http://xbna.pku.edu.cn/blog/xmlrpc.php")
-        try:
-            wpId = wpSrv.metaWeblog.newPost('', 'admin', 'xxxxxxxxx', {
-                'title': post.title,
-#                'mt_keywords': ['life', 'sysop'],    #ok2
-                'mt_keywords': tags,
-                'description': post.content
-            }, 1)
-            post.wpId = wpId
-        except Error, v:
-            logging.error(v)
-        """
-        
         self.response.out.write('''
             <?xml version="1.0" encoding="utf-8"?>
             <response>
