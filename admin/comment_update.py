@@ -66,31 +66,6 @@ class NewComment(webapp.RequestHandler):
                 
                 self.response.out.write('请输入「折腾」的拼音，小写，中间不带空格')
                 return
-            """
-            try:
-                if api.key is None:
-                    logging.error("No 'apikey.txt' file.")
-                elif not api.verify_key():
-                    logging.error("The API key is invalid.")
-                else:
-                    #会误杀twenty……无语
-                    if name != 'twenty' and api.comment_check(content.encode('utf-8'), {'comment_author': name.encode('utf-8'), 'comment_author_email': email, 'comment_author_url': url}):
-                        logging.info(u'截获垃圾，发自：%s，内容：%s' % (name, content))
-                        c.status = 'spam'
-                        c.put()
-                        #发邮件给我
-                        sender_address = 'pizzamx@gmail.com'
-                        user_address = "root+blog@wokanxing.info"
-                        subject = '[BLOG]Spam detected'
-                        msg = 'name: %s\nmail: %s\nurl: %s\ncontent: %s\n' % (name, email, url, content)
-                        mail.send_mail(sender_address, user_address, subject, msg)
-                        
-                        self.response.out.write('垃圾过滤系统错误分类了您的留言，替他向您说声对不起！请不要惊慌，保持冷静，拿起电话，联系pizza！或者不用理会也行，我会在收到系统报告之后第一时间复原您的评论，无需重发，谢谢！')
-                        return
-            except DownloadError:
-                logging.error('Cannot reach akismet')
-                
-            """
             c.put()
             
             for k, v in {'c_name': name, 'c_email': email, 'c_url': url, 'c_captcha': captcha}.iteritems():

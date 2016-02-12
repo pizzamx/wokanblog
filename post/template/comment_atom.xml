@@ -15,7 +15,7 @@
     % for comment in data:    
         <entry>
         	<author><name>${comment.authorName}</name></author>
-            <title>Comment on ${comment.post.get().title} by ${comment.authorName}</title>
+            <title>Comment on ${comment.key.parent().get().title} by ${comment.authorName}</title>
             <link href="${baseUrl}${comment.makeLink()}"/>
             ##FIXME: id should be refined
             <id>${baseUrl}${comment.makeLink()}</id>
