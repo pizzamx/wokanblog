@@ -218,7 +218,7 @@ blockquote { background:transparent url(/assets/blockquote.gif) no-repeat scroll
     #newpost_main input[type="submit"] { height: 30px; width: 100px; margin-top: 50px; }
     #newpost_main #post_private_flag { visibility: hidden; }
     #newpost_main #post_private_flag_lbl { cursor: pointer; border: 1px solid #ccc; width: 180px; font-size: 24px; }
-    #newpost_main #content_body { margin-left: 180px; height: 100%; width: 800px; }
+    #newpost_main #content_body { margin-left: 280px; height: 100%; width: 700px; }
 #comments_list { margin-top: 10px; }
     #comments_list .comment_entry { margin: 5px; padding: 2px; border: 1px outset #ccc; float: left; }
     	#comments_list .comment_entry .gravatar { float: right; }

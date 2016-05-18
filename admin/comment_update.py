@@ -30,7 +30,7 @@ from util.akismet import Akismet
 from mako.lookup import TemplateLookup
 
 from datetime import datetime, timedelta
-import logging, urllib, Cookie, os, math
+import logging, urllib, urllib2, Cookie, os, math, json
 
 api = Akismet(agent='wokanblog')
 
@@ -39,7 +39,7 @@ class NewComment(webapp.RequestHandler):
         slug = unicode(urllib.unquote(slug), 'utf-8')
         k = Post.get_by_id('_' + slug).key
         
-        name, email, url, content, captcha = (self.request.get(key) for key in ['name', 'email', 'url', 'content', 'captcha'])
+        name, email, url, content, captcha = (self.request.get(key) for key in ['name', 'email', 'url', 'content', 'g-recaptcha-response'])
         
         try:
             if content.strip() == '':
@@ -53,6 +53,7 @@ class NewComment(webapp.RequestHandler):
             c.content = content.replace('\n', '<br/>')
             c.status = 'approved'
 
+            """
             if captcha != 'zheteng':
                 logging.info(u'截获垃圾，发自：%s，内容：%s' % (name, content))
                 c.status = 'spam'
@@ -66,6 +67,29 @@ class NewComment(webapp.RequestHandler):
                 
                 self.response.out.write('请输入「折腾」的拼音，小写，中间不带空格')
                 return
+            """
+            
+            #TODO: 因为做了客户端验证，所以下面这段服务端验证就暂时跳过吧！（因为要用代理比较麻烦所以本地测试没做，应该可以直接用）
+            """
+            try:
+                payload = {
+                    'secret': '6Ld_PCATAAAAAN9oE8SGh3swJKjlNx0pAxSHXO5d',
+                    'response': captcha,
+                    'remoteip': c.ip
+                }
+                req = urllib2.Request('https://www.google.com/recaptcha/api/siteverify', urllib.urlencode(payload))
+                resp = json.loads(urllib2.urlopen(req).read())
+                if not (resp.has_key('success') and resp['success'] == 'true'):
+                    if resp.has_key('error-codes'):
+                        self.response.out.write('reCaptcha 验证失败，原因：' + resp['error-codes'])
+                        return
+                    else:
+                        raise Exception()
+            except Exception, e:
+                logging.fatal("Exception while analyzing reCaptcha", e)
+                self.response.out.write('reCaptcha 验证失败，不知道为啥……')
+                return
+            """
             c.put()
             
             for k, v in {'c_name': name, 'c_email': email, 'c_url': url, 'c_captcha': captcha}.iteritems():

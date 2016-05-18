@@ -36,7 +36,7 @@ from datetime import date
 
 class NewPost(webapp2.RequestHandler):
     def get(self):
-        mylookup = TemplateLookup(directories=[os.path.join(os.path.dirname(__file__), 'template')])
+        mylookup = TemplateLookup(directories=[os.path.join(os.path.dirname(__file__), 'template'), os.path.join(os.path.dirname(__file__), '../../post/template')])
         template = mylookup.get_template('post_new.html')
         tags = Tag.query()
         self.response.out.write(template.render_unicode(tags=tags))
