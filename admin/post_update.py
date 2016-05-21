@@ -109,7 +109,7 @@ class Edit(webapp2.RequestHandler):
         slug = unicode(urllib.unquote(slug), 'utf-8')
         post = Post.get_by_id('_' + slug)
 
-        mylookup = TemplateLookup(directories=[os.path.join(os.path.dirname(__file__), 'template')])
+        mylookup = TemplateLookup(directories=[os.path.join(os.path.dirname(__file__), 'template'), os.path.join(os.path.dirname(__file__), '../../post/template')])
         template = mylookup.get_template('post_new.html')
         tags = Tag.query()
         self.response.out.write(template.render_unicode(tags=tags,post=post))
