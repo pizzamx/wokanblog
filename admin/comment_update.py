@@ -69,8 +69,6 @@ class NewComment(webapp.RequestHandler):
                 return
             """
             
-            #TODO: 因为做了客户端验证，所以下面这段服务端验证就暂时跳过吧！（因为要用代理比较麻烦所以本地测试没做，应该可以直接用）
-            """
             try:
                 payload = {
                     'secret': '6Ld_PCATAAAAAN9oE8SGh3swJKjlNx0pAxSHXO5d',
@@ -78,18 +76,18 @@ class NewComment(webapp.RequestHandler):
                     'remoteip': c.ip
                 }
                 req = urllib2.Request('https://www.google.com/recaptcha/api/siteverify', urllib.urlencode(payload))
-                resp = json.loads(urllib2.urlopen(req).read())
-                if not (resp.has_key('success') and resp['success'] == 'true'):
+                resp = urllib2.urlopen(req).read()
+                resp = json.loads(resp)
+                if not (resp.has_key('success') and resp['success'] == True):
                     if resp.has_key('error-codes'):
                         self.response.out.write('reCaptcha 验证失败，原因：' + resp['error-codes'])
                         return
                     else:
-                        raise Exception()
+                        raise Exception(resp)
             except Exception, e:
-                logging.fatal("Exception while analyzing reCaptcha", e)
+                logging.fatal("Exception while analyzing reCaptcha: %s" % e)
                 self.response.out.write('reCaptcha 验证失败，不知道为啥……')
                 return
-            """
             c.put()
             
             for k, v in {'c_name': name, 'c_email': email, 'c_url': url, 'c_captcha': captcha}.iteritems():
