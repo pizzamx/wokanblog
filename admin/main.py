@@ -23,7 +23,7 @@ import webapp2
 
 from admin import post_update
 from admin import comment_update
-from admin.cronjobs import UpdateblogrollCronJob
+from admin.cronjobs import UpdateblogrollCronJob, DSCronJob
 
 import util, widget, logging
 
@@ -33,6 +33,7 @@ application = webapp2.WSGIApplication([
     ('/admin/uploadImg', post_update.NewImg),
     (r'/(?:(\d{4})/)?(?:(\d{1,2})/)?([^/]+)/edit/?', post_update.Edit),
     ('/admin/updateblogroll', UpdateblogrollCronJob),
+    ('/admin/exe_ds_task', DSCronJob),
     ('/admin/comments/(?:page/(\d+))?', comment_update.ListComments),
     ('/admin/comments/report/(.*)', comment_update.ReportSpam),
     ('/admin/comments/markham/(.*)', comment_update.MarkHam),

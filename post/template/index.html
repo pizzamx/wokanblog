@@ -1,18 +1,12 @@
 ## -*- coding: utf-8 -*-
 <%include file="header.html"/>
 <div id="wrapper">
-%if pageCount > 1:
-    <div class="page_bar">
-    	%for i in rg:
-    		%if i == currentPage:
-    		<div class="current_page">${i}</div>
-    		%else:
-    		<div><a href="${pagePath}page/${i}">${i}</a></div>
-    		%endif
-    	%endfor
+    <div class="post_nav">
+        %if next_page != '':
+            <a href="${pagePath}page/next/${next_page}">  较早的文章</a><span>&gt;&gt;&gt;</span>
+	%endif
     </div>
-%endif
-    <div id="content" class="multi float_right">
+    <div id="content" class="clear_bar">
     %for post in posts:
         <div class="entry clear_bar">
     		<div class="styled_date">
@@ -27,19 +21,11 @@
         	 </div>
             %else:
                 <h1 class="title"><a href="${post.makeLink()}">${post.title}${'<span class="private_sign">(Private)</span>' if post.isPrivate else ''}</a></h1>
-                <div class="post_meta">
-        	        <span><a href="${post.makeLink()}#comments">
-        			%if post.getCommentCount() == 0:
-        				没人理我:(
-        			%else:
-        				${post.getCommentCount()}条评论
-        			%endif
-        			</a></span>&nbsp;|&nbsp;关键词：
-        	        <span>${post.getTagLinks()}</span>
                     %if isAdmin:
-                        &nbsp;|&nbsp;<span><a href="${post.getEditLink()}">编辑</a></span>
+                    <div class="post_meta">
+                            <span><a href="${post.getEditLink()}">编辑</a></span>
+            	</div>
                     %endif
-        	    </div>
                 <div class="post_content clear_bar">${post.briefContent()}</div>
                 <!--
                     <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
@@ -56,5 +42,6 @@
         </div>
     %endfor
     </div>
-<%include file="widget.html"/>
+</div>
+<!--%include file="widget.html"/-->
 <%include file="footer.html"/>

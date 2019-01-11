@@ -17,10 +17,37 @@ indexes:
 
 - kind: Comment
   properties:
+  - name: post
+  - name: status
+
+- kind: Comment
+  properties:
+  - name: post
+  - name: status
+  - name: date
+
+- kind: Comment
+  properties:
+  - name: status
+  - name: date
+
+- kind: Comment
+  properties:
   - name: status
   - name: date
     direction: desc
 
+- kind: Comment
+  ancestor: yes
+  properties:
+  - name: status
+  - name: date
+
+- kind: Post
+  properties:
+  - name: isPage
+  - name: date
+
 - kind: Post
   properties:
   - name: isPage
@@ -30,6 +57,17 @@ indexes:
 - kind: Post
   properties:
   - name: isPage
+  - name: isPrivate
+  - name: date
+    direction: desc
+
+- kind: Post
+  properties:
+  - name: isPrivate
+  - name: date
+
+- kind: Post
+  properties:
   - name: isPrivate
   - name: date
     direction: desc

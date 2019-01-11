@@ -30,22 +30,22 @@ from util.akismet import Akismet
 from mako.lookup import TemplateLookup
 
 from datetime import datetime, timedelta
-import logging, urllib, Cookie, os, math
+import logging, urllib, urllib2, Cookie, os, math, json
 
 api = Akismet(agent='wokanblog')
 
 class NewComment(webapp.RequestHandler):
     def post(self, slug):
         slug = unicode(urllib.unquote(slug), 'utf-8')
-        k = Post.get_by_key_name('_' + slug).key()
+        k = Post.get_by_id('_' + slug).key
         
-        name, email, url, content, captcha = (self.request.get(key) for key in ['name', 'email', 'url', 'content', 'captcha'])
+        name, email, url, content, captcha = (self.request.get(key) for key in ['name', 'email', 'url', 'content', 'g-recaptcha-response'])
         
         try:
             if content.strip() == '':
                 raise BadValueError('Content should not be empty')
-            c = Comment()
-            c.post = k
+            c = Comment(parent=k)
+            #c.post = k
             c.authorName = name
             c.authorEmail = email
             c.url = url
@@ -53,7 +53,8 @@ class NewComment(webapp.RequestHandler):
             c.content = content.replace('\n', '<br/>')
             c.status = 'approved'
 
-            if captcha != u'\u4e0d\u662f':
+            """
+            if captcha != 'zheteng':
                 logging.info(u'截获垃圾，发自：%s，内容：%s' % (name, content))
                 c.status = 'spam'
                 #c.put()    //20131201: dont't put
@@ -64,33 +65,29 @@ class NewComment(webapp.RequestHandler):
                 msg = 'name: %s\nmail: %s\nurl: %s\ncontent: %s\n' % (name, email, url, content)
                 mail.send_mail(sender_address, user_address, subject, msg)
                 
-                self.response.out.write('都说了写 ** 不是 ** 两个字了！')
+                self.response.out.write('请输入「折腾」的拼音，小写，中间不带空格')
                 return
             """
+            
             try:
-                if api.key is None:
-                    logging.error("No 'apikey.txt' file.")
-                elif not api.verify_key():
-                    logging.error("The API key is invalid.")
-                else:
-                    #会误杀twenty……无语
-                    if name != 'twenty' and api.comment_check(content.encode('utf-8'), {'comment_author': name.encode('utf-8'), 'comment_author_email': email, 'comment_author_url': url}):
-                        logging.info(u'截获垃圾，发自：%s，内容：%s' % (name, content))
-                        c.status = 'spam'
-                        c.put()
-                        #发邮件给我
-                        sender_address = 'pizzamx@gmail.com'
-                        user_address = "root+blog@wokanxing.info"
-                        subject = '[BLOG]Spam detected'
-                        msg = 'name: %s\nmail: %s\nurl: %s\ncontent: %s\n' % (name, email, url, content)
-                        mail.send_mail(sender_address, user_address, subject, msg)
-                        
-                        self.response.out.write('垃圾过滤系统错误分类了您的留言，替他向您说声对不起！请不要惊慌，保持冷静，拿起电话，联系pizza！或者不用理会也行，我会在收到系统报告之后第一时间复原您的评论，无需重发，谢谢！')
+                payload = {
+                    'secret': '6Ld_PCATAAAAAN9oE8SGh3swJKjlNx0pAxSHXO5d',
+                    'response': captcha,
+                    'remoteip': c.ip
+                }
+                req = urllib2.Request('https://www.google.com/recaptcha/api/siteverify', urllib.urlencode(payload))
+                resp = urllib2.urlopen(req).read()
+                resp = json.loads(resp)
+                if not (resp.has_key('success') and resp['success'] == True):
+                    if resp.has_key('error-codes'):
+                        self.response.out.write('reCaptcha 验证失败，原因：' + resp['error-codes'])
                         return
-            except DownloadError:
-                logging.error('Cannot reach akismet')
-                
-            """
+                    else:
+                        raise Exception(resp)
+            except Exception, e:
+                logging.fatal("Exception while analyzing reCaptcha: %s" % e)
+                self.response.out.write('reCaptcha 验证失败，不知道为啥……')
+                return
             c.put()
             
             for k, v in {'c_name': name, 'c_email': email, 'c_url': url, 'c_captcha': captcha}.iteritems():
@@ -110,10 +107,10 @@ class NewComment(webapp.RequestHandler):
 class ListComments(webapp.RequestHandler):
     def get(self, page):
         SIZE = 20
-        comments = Comment.all()
+        comments = Comment.query()
         page = 1 if not page else int(page)
         pageCount = int(math.ceil(float(comments.count()) / SIZE))
-        comments = comments.order('-date').fetch(SIZE, (page - 1) * SIZE)
+        comments = comments.order(+Comment.date).fetch(SIZE, offset=(page - 1) * SIZE)
         mylookup = TemplateLookup(directories=[os.path.join(os.path.dirname(__file__), 'template')])
         template = mylookup.get_template('manage_comments.html')
         #分页

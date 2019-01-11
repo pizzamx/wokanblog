@@ -57,7 +57,7 @@ def putImgs(content):
     srcs = re.findall(r'(?i)<a.*?href="(http://[^"]*?(?:png|jpg|jpeg|gif))".*?>', content) + re.findall(r'(?i)<img.*?src="(http://.*?)"', content)
     for src in srcs:
         name = src[src.rfind('/') + 1:]
-        img = Image(src=src, name=name, key_name='_' + name)
+        img = Image(src=src, name=name, id='_' + name)
         img.fetch()
         content = content.replace(src, '/img/%s' % name)
         #content = re.sub(r'(?:<a .*?>)?(<img.*?src=")%s(".*?>)(?:</a>)?' % src, r'\1/img/%s\2' % name, content, re.IGNORECASE)
@@ -91,7 +91,7 @@ def putPost(item):
         date = datetime.strptime(getText(item, 'post_date_gmt', wpns), '%Y-%m-%d %H:%M:%S')     #page may not contain valid pub date
     except ValueError:
         date = datetime.now()
-    post = Post(title=title, slug=slug, content=content, date=date, isPage=(type=='page'), key_name='_' + slug)
+    post = Post(title=title, slug=slug, content=content, date=date, isPage=(type=='page'), id='_' + slug)
     post.put()
     return post
 
@@ -101,7 +101,7 @@ def associateTags(item, post):
     for c in cs:
         if c.hasAttribute('domain') and not c.hasAttribute('nicename') and c.getAttribute('domain') == 'tag':
             tagName = c.firstChild.data
-            tag = Tag.get_by_key_name('_' + tagName)
+            tag = Tag.get_by_id('_' + tagName)
             post.tags.append(tag.key())
     if len(cs):
         post.put()
@@ -158,7 +158,7 @@ class Count(webapp.RequestHandler):
         tags = []
         for tagE in tagEs:
             tagName = getText(tagE, 'tag_name', wpns)
-            tag = Tag(name=tagName, key_name='_' + tagName)
+            tag = Tag(name=tagName, id='_' + tagName)
             tags.append(tag)
         if len(tags):
             db.put(tags)

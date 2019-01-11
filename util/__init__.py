@@ -48,7 +48,6 @@ for (code, name) in SMILEYS.iteritems():
     SMILEY_CLASS.append('smiley_%s' % name)
 
 def memcached(t):
-    "decorate cachable calls"
     def w(func):
         def wrapper(self, *args):
             #so func_name should be unique

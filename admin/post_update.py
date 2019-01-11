@@ -36,9 +36,9 @@ from datetime import date
 
 class NewPost(webapp2.RequestHandler):
     def get(self):
-        mylookup = TemplateLookup(directories=[os.path.join(os.path.dirname(__file__), 'template')])
+        mylookup = TemplateLookup(directories=[os.path.join(os.path.dirname(__file__), 'template'), os.path.join(os.path.dirname(__file__), '../../post/template')])
         template = mylookup.get_template('post_new.html')
-        tags = Tag.all()
+        tags = Tag.query()
         self.response.out.write(template.render_unicode(tags=tags))
         
     def post(self):
@@ -48,16 +48,16 @@ class NewPost(webapp2.RequestHandler):
         #TODO: 因为用slug做了key，所以如果改了slug，显示在url里面的slug还是不会变的，当然这个无所谓了，不改不就行了，哈哈哈哈哈~
         if fromEdit:
             slug = urllib.unquote(slug)
-            post = Post.get_by_key_name('_' + slug)
+            post = Post.get_by_id('_' + slug)
             post.tags = []
         else:
             if slug.strip() == '':
                 slug = self.request.get('title')
             slug = urllib.unquote(slug).replace(' ', '-')
-            conflictedCount = Post.get_by_key_name('_' + slug)
+            conflictedCount = Post.get_by_id('_' + slug)
             if conflictedCount:
                 slug += '-2'
-            post = Post(key_name='_' + slug)
+            post = Post(id='_' + slug)
             post.slug = slug
         
         post.content = self.request.get('content')
@@ -71,11 +71,11 @@ class NewPost(webapp2.RequestHandler):
                 post.isPrivate = False
             if tags and tags.strip() != '':
                 for tagName in map(lambda n: n.strip(), tags.split(',')):
-                    tag = Tag.get_by_key_name('_' + tagName)
+                    tag = Tag.get_by_id('_' + tagName)
                     if not tag:
-                        tag = Tag(name=tagName, key_name='_' + tagName)
+                        tag = Tag(name=tagName, id='_' + tagName)
                         tag.put()
-                    post.tags.append(tag.key())
+                    post.tags.append(tag.key)
         
         post.put()
 
@@ -98,6 +98,7 @@ class NewPost(webapp2.RequestHandler):
         memcache.delete('getAllKeys')
         memcache.delete('queryPostFeed')
         memcache.delete('getGroupedCount')
+        memcache.delete('getTagCounts')
         if not post.isPage:
             self.redirect('/')
         else:
@@ -106,11 +107,11 @@ class NewPost(webapp2.RequestHandler):
 class Edit(webapp2.RequestHandler):
     def get(self, y, m, slug):
         slug = unicode(urllib.unquote(slug), 'utf-8')
-        post = Post.get_by_key_name('_' + slug)
+        post = Post.get_by_id('_' + slug)
 
-        mylookup = TemplateLookup(directories=[os.path.join(os.path.dirname(__file__), 'template')])
+        mylookup = TemplateLookup(directories=[os.path.join(os.path.dirname(__file__), 'template'), os.path.join(os.path.dirname(__file__), '../../post/template')])
         template = mylookup.get_template('post_new.html')
-        tags = Tag.all()
+        tags = Tag.query()
         self.response.out.write(template.render_unicode(tags=tags,post=post))
         
         
@@ -128,7 +129,7 @@ class NewImg(webapp2.RequestHandler):
         widthLimit = int(self.request.get('w'))
         d= date.today()
         name= '%d_%d_%d_%s' % (d.year, d.month, d.day, name)
-        img = Image(src='', name=name, key_name='_' + name, data=db.Blob(stream))
+        img = Image(src='', name=name, id='_' + name, data=db.Blob(stream))
         img.put()
         
         gImg = images.Image(stream)
@@ -138,7 +139,7 @@ class NewImg(webapp2.RequestHandler):
             dotPos = name.rfind('.')
             ext = name[dotPos:]
             name = name[:dotPos] + '_resized' + ext
-            resizedImg = Image(src='', name=name, key_name='_' + name, data=db.Blob(stream))
+            resizedImg = Image(src='', name=name, id='_' + name, data=db.Blob(stream))
             resizedImg.put()
             
         mylookup = TemplateLookup(directories=[os.path.join(os.path.dirname(__file__), 'template')])

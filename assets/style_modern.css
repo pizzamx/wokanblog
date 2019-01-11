@@ -47,13 +47,15 @@ blockquote { background:transparent url(/assets/blockquote.gif) no-repeat scroll
     .current_page{ padding: 5px 7px; background: #00628B !important; color: #E6E6DC !important; opacity: 0.8; }
 	.page_bar .current_page{ border-radius: 0 0 5px 5px; }
 	
-#post_nav { float: right; padding: 10px 5px; background: #00628B; opacity: 0.8; position: relative; top: 0; border: 1px solid #ccc; border-top: none; border-radius: 0 0 8px 8px; color: #81A594; }
-    #post_nav a { color: #E6E6DC; }
+.post_nav { float: right; padding: 10px 15px; background: #00628B; opacity: 0.8; position: relative; top: 0; border-radius: 0 0 0 8px; color: #81A594; }
+    .post_nav a { color: #E6E6DC; }
 /*
 	FOOTER
 */
-#footer { padding: 10px; text-align: right; background-color: #00628B; font: 14px; letter-spacing: 1px; position: relative; zoom: 1; color: #81A594; }
+#footer { padding: 30px 10px; text-align: right; background-color: #00628B; font-size: 14px; letter-spacing: 1px; position: relative; zoom: 1; color: #81A594; }
     #footer a { color: #E6E6DC; }
+    .post_nav_b { position: absolute; right: 0; opacity: 1; border-radius: 8px 0 0 0; }
+
 #page_bar_b { position: absolute; bottom: 670px; top: auto; right: 10px; }
 	#page_bar_b div { background: #fff; }
 		#page_bar_b div a:hover{ background: #ac9; color: #fff; }
@@ -68,14 +70,14 @@ blockquote { background:transparent url(/assets/blockquote.gif) no-repeat scroll
     CONTENT
 */
 #wrapper { margin: 0 auto; text-align: center; position: relative; }
-#content { width: 800px; margin: 20px auto 0; text-align: left; }
+#content { width: 800px; min-height: 600px; margin: 20px auto 0; text-align: left; }
 #content p { margin-bottom: 1em; }
 /*
 #content { width: 700px; float: right; margin-top: 20px; }
 #panel { width: 260px; float: left; }
 */
 .entry { margin-bottom: 10px; }
-.title { font: small-caps 32px/120% "Hiragino Sans GB", "Microsoft YaHei", YaHei, sans-serif; padding: 0 0 8px; } 
+.title { font: small-caps 32px/120% "Hiragino Sans GB", "Microsoft YaHei", YaHei, sans-serif; padding: 0 0 8px; line-height:180%; } 
 	.multi .title, .multi .post_meta {  }
     .title .private_sign { color: #f00; }
 .styled_date { float:right; text-align:center; font-family: "Poiret One", sans-serif; line-height:180%; margin-right:8px; } 
@@ -84,7 +86,7 @@ blockquote { background:transparent url(/assets/blockquote.gif) no-repeat scroll
 .styled_month { font-size:18px; letter-spacing:2px; font-variant: small-caps; }
 .post_meta { margin-bottom: 10px; }
     .entry .private_meta { margin-bottom: 30px; }
-.post_content { font-size: 14px; }
+.post_content { font-size: 16px; }
 	.post_content p { line-height: 1.8em; }
 	.post_content p a, .post_content li a { background: #E6E6DC; padding: 0 3px; }
 	.post_content p a:hover, .post_content li a:hover { background: #00628B; color: #E6E6DC; }
@@ -166,9 +168,9 @@ blockquote { background:transparent url(/assets/blockquote.gif) no-repeat scroll
     #widgets>h2:nth-of-type(1) { left: 258px; } /*blogroll*/
     #widgets>h2:nth-of-type(2) { left: 488px; } /*comment*/
     #widgets>h2:nth-of-type(3) { left: 720px; } /*tag*/
-    #widgets ul, #tag_cloud, #calendar { float: left; margin: 30px 0 0 30px; width: 200px; }
+    #widgets ul, #tag_cloud, #calendar { width: 200px; }
 	#widgets li { padding-bottom: 3px; margin: 0.5em 0; width: 100%; }
-    #calendar { position: relative; left: 690px; top: 200px; }
+    #calendar { position: absolute; left: 690px; top: 15px; }
     	.c_month { position: relative; top: -1px; display: block; font: 32px "Poiret One", sans-serif; text-align: center; }
     	#calendar .month_link { width: 10px; position: absolute; top: 12px; z-index: 10; }
     		.prev_month_link { left: 5px; }
@@ -185,13 +187,16 @@ blockquote { background:transparent url(/assets/blockquote.gif) no-repeat scroll
     	.c_days .post_count { position: absolute; top: 2px; right: 5px; line-height: 12px;}
     
 #search_box { padding: 5px; color: #aaa; }
+
+#blogroll, #recent_comments { position: absolute; top: 50px; }
 	
-#recent_comments { margin-bottom: 20px; }
+#recent_comments { left: 488px; }
 	#recent_comments ul { line-height: 200%; }
     #recent_comments li { margin-bottom: 1em; }
 
 #tag_cloud { line-height: 200%; }
 
+#blogroll { left: 258px; }
 #blogroll li { color: #bbb; position: relative; }
 	#blogroll .update_status { position: absolute; top: 0; right: 0; border-radius: 3px; width:59px; height:14px; cursor:help; width: 14px; opacity: 0.6; }
 	#blogroll .just_now { background-color: #0f0; }
@@ -213,7 +218,7 @@ blockquote { background:transparent url(/assets/blockquote.gif) no-repeat scroll
     #newpost_main input[type="submit"] { height: 30px; width: 100px; margin-top: 50px; }
     #newpost_main #post_private_flag { visibility: hidden; }
     #newpost_main #post_private_flag_lbl { cursor: pointer; border: 1px solid #ccc; width: 180px; font-size: 24px; }
-    #newpost_main #content_body { margin-left: 180px; height: 100%; width: 800px; }
+    #newpost_main #content_body { margin-left: 280px; height: 100%; width: 700px; }
 #comments_list { margin-top: 10px; }
     #comments_list .comment_entry { margin: 5px; padding: 2px; border: 1px outset #ccc; float: left; }
     	#comments_list .comment_entry .gravatar { float: right; }

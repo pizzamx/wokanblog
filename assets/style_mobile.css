@@ -82,8 +82,8 @@ blockquote { background:transparent url(/assets/blockquote.gif) no-repeat scroll
 .styled_day { font-size:35px; color:#8fbf60; }
 .styled_month { font-size:14px; letter-spacing:2px; font-variant: small-caps; }
 .post_meta { border-top: 1px solid #ccc; margin-bottom: 10px; }
-.post_content { font-size: 14px; }
-	.post_content p { line-height: 1.8em; text-indent: 2em; }
+.post_content { font-size: 18px; }
+	.post_content p { line-height: 1.8em; }
 	.post_content p a, .post_content li a { background: #eee; }
 	.post_content p a:hover, .post_content li a:hover { background: #8FBF60; color: #fff; }
 	.post_content ol { list-style: decimal; margin-bottom: 1em; }
@@ -113,7 +113,7 @@ blockquote { background:transparent url(/assets/blockquote.gif) no-repeat scroll
 	    #comments .comment_entry .gravatar img{ width: 48px; height: 48px; }
 #comments .comment_meta { margin-bottom: 5px; }
 	#comments .comment_meta span { padding-left: 10px; }
-#comments .comment_content { line-height: 1.8em; font-size: 14px; }
+#comments .comment_content { line-height: 1.8em; font-size: 18px; }
 .highlighted_comment { background: #efc; }
 
 #response { margin-top: 20px; }

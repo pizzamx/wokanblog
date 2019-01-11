@@ -101,10 +101,10 @@ class Calendar(object):
     
     def getMonthImg(self, y, m):
         name = 'c_%d_%d' % (y, m)
-        img = Image.get_by_key_name('_' + name)
+        img = Image.get_by_id('_' + name)
         if img is None:
             url = 'http://www.urbanfonts.com/images/gdcolor4.php?text=%d.%d&font=../fonts/folders/jinky/JINKY.TTF&fgColor=000000&fontBGColor=E4F2FD&width=120&height=40' % (y, m)
-            img = Image(src=url, name=name, key_name='_' + name)
+            img = Image(src=url, name=name, id='_' + name)
             if img.fetch():
                 return '/img/' + name
             else:
@@ -114,7 +114,7 @@ class Calendar(object):
 
     @memcached(-1)
     def getGroupedCount(self):
-         posts = Post.all().filter('isPage = ', False)
+         posts = Post.query(Post.isPage == False)
          groupedCount = defaultdict(int)
          for post in posts:
              groupedCount[post.date.date()] += 1
@@ -124,13 +124,13 @@ class RecentComment(object):
     def dump(self):
         html = u'<h2>最新的留言</h2><ul id="recent_comments">'
         for c in self.getLatestComments():
-            html += '<li><a href="%s">%s</a> (%s)</li>' % (c.makeLink(), c.post.title, c.getAuthorLink())
+            html += '<li><a href="%s">%s</a> (%s)</li>' % (c.makeLink(), c.key.parent().get().title, c.getAuthorLink())
         html += '</ul>'
         return html
     
     @memcached(-1)
     def getLatestComments(self):
-        return Comment.all().filter('status =', 'approved').order('-date').fetch(10)
+        return Comment.query(Comment.status == 'approved').order(-Comment.date).fetch(10)
     
 class TagCloud(object):
     def dump(self):
@@ -156,16 +156,21 @@ class TagCloud(object):
 
     @memcached(-1)
     def getTagCounts(self):
-        tags = Tag.all()
+        posts = Post.query().fetch(projection=[Post.tags])
         result = {}
-        for tag in tags:
-            result[tag.name] = Post.gql('WHERE tags = :1 and isPage = False', tag.key()).count()
+        for p in posts:
+            for tkey in p.tags:
+                tname = tkey.get().name
+                if tname in result:
+                    result[tname] = result[tname] + 1
+                else:
+                    result[tname] = 1
         return sorted(result.items(), key=operator.itemgetter(1), reverse=True)
     
 class BlogUpdates(object):
     "显示blogroll的更新情况"
     def dump(self):
-        brs = Blogroll.all()
+        brs = Blogroll.query()
         html = '<h2>Blogroll</h2><ul id="blogroll">'
         for br in brs:
             diff = datetime.now().toordinal() - br.lastUpdate.toordinal()

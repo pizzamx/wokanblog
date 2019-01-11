@@ -39,12 +39,12 @@
     				${baseUrl}${post.makeLink()}/trackback
     			</a>
     		</div>
-    		%for c in post.comment_set.order('date'):
+    		%for c in cs:
     			%if c.status == 'approved':
-    		        <div class="comment_entry" id="c_${c.key().id()}">
+    		        <div class="comment_entry" id="c_${c.key.id()}">
     			    %if not c.isTrackback:
     		            <div class="comment_meta"><strong>${c.getAuthorLink()}</strong> 在 ${c.getCSTDate().strftime('%x %X')} 说
-    						<span><a href="javascript:quote('${c.authorName}', ${c.key().id()})">回复本条评论</a></span></div>
+    						<span><a href="javascript:quote('${c.authorName}', ${c.key.id()})">回复本条评论</a></span></div>
     			        <div class="comment_content">
     			            <div class="gravatar"><a href="/about-gravatar"><img src="${c.getGravatar()}" alt="gravatar"/></a></div>
     				        ${c.strippedContent()}
@@ -68,7 +68,7 @@
     			<div>Email: <input type="text" name="email" value="${cookies['c_email']}" /></div>
     			<div>URL: <input type="text" name="url" value="${cookies['c_url']}" /></div>
     		    <div><textarea name="content" id="comment_content" rows="6" cols="60"></textarea>
-                <div id="captcha">为防骚扰，请填空温总理名言：公平与正义比<input type="text" id="captcha_txt" name="captcha" value="${cookies['c_captcha']}" />还要有光辉！（hint: sun）</div>
+                <div class="g-recaptcha" data-sitekey="6Ld_PCATAAAAAA49JG2lM97wZ5-0N9g-W1ZyLOhK"></div>
     		    <div class="button"><input type="submit" value="发布！"></div></div>
     		</form>
     	</div>
@@ -97,8 +97,8 @@
                 highlight(href.substr(href.indexOf('#')));
             });
             $('form').submit(function(e){
-                if($('#captcha_txt').val() == ''){
-                    alert('请先回答「发布」按钮上方的问题！');
+                if(grecaptcha.getResponse() == ""){
+                    alert('请按照「发布」按钮上方的提示操作，证明你是我们种族的一员！\nPlease authenticate yourself to be a member of the human race by proceeding reCaptcha ops just above the submit button.');
                     e.preventDefault();
                 }
             });
