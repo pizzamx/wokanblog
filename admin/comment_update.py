@@ -21,18 +21,19 @@
 
 from google.appengine.api import urlfetch, memcache, mail
 from google.appengine.ext import webapp
+from google.appengine.ext import ndb
 from google.appengine.ext.db import Key
 from google.appengine.api.datastore_errors import BadValueError
 from google.appengine.api.urlfetch import DownloadError
 
 from model import Comment, Post
-from util.akismet import Akismet
+#from util.akismet import Akismet
 from mako.lookup import TemplateLookup
 
 from datetime import datetime, timedelta
 import logging, urllib, urllib2, Cookie, os, math, json
 
-api = Akismet(agent='wokanblog')
+#api = Akismet(agent='wokanblog')
 
 class NewComment(webapp.RequestHandler):
     def post(self, slug):
@@ -85,7 +86,7 @@ class NewComment(webapp.RequestHandler):
                     else:
                         raise Exception(resp)
             except Exception, e:
-                logging.fatal("Exception while analyzing reCaptcha: %s" % e)
+                logging.fatal("Exception while analyzing reCaptcha: %s" % e.reason)
                 self.response.out.write('reCaptcha 验证失败，不知道为啥……')
                 return
             c.put()
@@ -106,11 +107,11 @@ class NewComment(webapp.RequestHandler):
         
 class ListComments(webapp.RequestHandler):
     def get(self, page):
-        SIZE = 20
+        SIZE = 30
         comments = Comment.query()
         page = 1 if not page else int(page)
         pageCount = int(math.ceil(float(comments.count()) / SIZE))
-        comments = comments.order(+Comment.date).fetch(SIZE, offset=(page - 1) * SIZE)
+        comments = comments.order(-Comment.date).fetch(SIZE, offset=(page - 1) * SIZE)
         mylookup = TemplateLookup(directories=[os.path.join(os.path.dirname(__file__), 'template')])
         template = mylookup.get_template('manage_comments.html')
         #分页
@@ -129,8 +130,10 @@ class ListComments(webapp.RequestHandler):
 
 class ReportSpam(webapp.RequestHandler):
     def post(self, id):
-        c = Comment.get_by_id(int(id))
+        c_key = ndb.Key(urlsafe=id)
+        c = c_key.get()
         if c:
+            """
             try:
                 if api.key is None:
                     logging.error("No 'apikey.txt' file.")
@@ -147,11 +150,21 @@ class ReportSpam(webapp.RequestHandler):
                 logging.error('Cannot reach akismet')
 
             self.response.out.write('failed')
+            """
+            c.status = 'spam'
+            c.put()
+            memcache.delete('getLatestComments')
+            self.response.out.write('ok')
+            return
+        else:
+            self.response.out.write('Comment %s not found' % id)
             
 class MarkHam(webapp.RequestHandler):
     def post(self, id):
-        c = Comment.get_by_id(int(id))
+        c_key = ndb.Key(urlsafe=id)
+        c = c_key.get()
         if c:
+            """
             try:
                 if api.key is None:
                     logging.error("No 'apikey.txt' file.")
@@ -166,5 +179,12 @@ class MarkHam(webapp.RequestHandler):
                     return
             except DownloadError:
                 logging.error('Cannot reach akismet')
-
-            self.response.out.write('failed')
+            """
+            c.status = 'approved'
+            c.put()
+            memcache.delete('getLatestComments')
+            self.response.out.write('ok')
+            return
+        else:
+            self.response.out.write('Comment %s not found' % id)
+            

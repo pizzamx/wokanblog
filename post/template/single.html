@@ -24,8 +24,8 @@
     	</div>
     	<div class="post_content">${post.strippedContent()}</div>
     	<div id="comments" class="clear_bar">
-    		%if post.getCommentCount() > 0:
-    			<h2>${post.getCommentCount()} 条留言</h2>
+    		%if cs.count() > 0:
+    			<h2>${cs.count()} 条留言</h2>
     		%else:
     			<h2>没人理我:(</h2>
     		%endif

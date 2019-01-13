@@ -1,22 +1,26 @@
 ## -*- coding: utf-8 -*-
-<%include file="../post/template/header.html"/>
+<%include file="../../post/template/header.html"/>
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
 <script type="text/javascript">
     function report(id, btn){
+        $(btn).disabled = true;
         $.post('/admin/comments/report/' + id, {}, function(data){
             if(data == 'ok'){
                 $('#c_' + id).removeClass('approved_entry').addClass('spam_entry');
                 $(btn).remove();
             }
         }, "text");
+        $(btn).disabled = false;
     }
-    function save(id, btn){
+    function bail(id, btn){
+        $(btn).disabled = true;
         $.post('/admin/comments/markham/' + id, {}, function(data){
             if(data == 'ok'){
                 $('#c_' + id).removeClass('spam_entry').addClass('approved_entry');
                 $(btn).remove();
             }
         }, "text");
+        $(btn).disabled = false;
     }
 </script>
 <div id="admin_wrapper">
@@ -38,20 +42,20 @@
 %endif
     <div id="comments_list">
 		%for c in comments:
-        <div class="comment_entry ${c.status}_entry" id="c_${c.key.id()}">
+        <div class="comment_entry ${c.status}_entry" id="c_${c.key.urlsafe()}">
             <div class="comment_meta"><strong>${c.getAuthorLink()}</strong>(${c.authorEmail})<a href="${c.makeLink()}">在 ${c.getCSTDate().strftime('%Y-%m-%d %H:%M')} 说</a></div>
 	        <div class="comment_content">
 	            <div class="gravatar"><a href="/about-gravatar"><img src="${c.getGravatar()}" width="48" alt="gravatar"/></a></div>
 		        ${c.strippedContent()}
 		        <div class="clear_bar">
                     %if c.status == 'approved':
-                        <button onclick="report(${c.key.id()}, this)">Report Spam!</button>
+                        <button onclick="report('${c.key.urlsafe()}', this)">Report Spam!</button>
                     %else:
-                        <button onclick="save(${c.key.id()}, this)">Not Spam!</button>
+                        <button onclick="bail('${c.key.urlsafe()}', this)">Not Spam!</button>
                     %endif
                 </div>
 		    </div>
         </div>
 		%endfor
     </div>
-<%include file="../post/template/footer.html"/>
+<%include file="../../post/template/footer.html"/>
