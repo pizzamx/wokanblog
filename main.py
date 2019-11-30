@@ -24,6 +24,17 @@ import webapp2
 from post import post_query, archive_query
 from util import trackback, theme
 
+"""
+    加过滤：
+    post_query
+        Index
+        Single
+        Page
+        Feed
+    archive_query
+        TagArchive
+        DateRangeArchive
+"""
 application = webapp2.WSGIApplication([
     ('/', post_query.Index),
     (r'/page/(next|prev)/(\S*)', post_query.Index),

@@ -30,7 +30,7 @@ from mako.lookup import TemplateLookup
 
 from model import Post, Comment, CST
 from model import Image
-from util import memcached
+from util import memcached, plugins
 
 from datetime import tzinfo, timedelta, datetime, date
 import os, logging, urllib, math, calendar, re
@@ -113,6 +113,13 @@ class QueryBase(webapp2.RequestHandler):
         self.response.write(template.render_unicode(**args))
     
     def getTemplate(self, name):
+        #判断 IP 地址
+        #FIXME: Feed output routine should be another branch
+        if not plugins.is_from_civilization(self.request):
+            if self.isFromMobileDevice():
+                name = 'mChina.html'
+            else:
+                name = 'China.html'
         #读取模板文件
         mylookup = TemplateLookup(directories=[os.path.join(os.path.dirname(__file__), 'template')], 
                                   #module_directory=os.path.join(os.path.dirname(__file__), 'tpl_cache'),     #GAE不支持tempfile.mkstemp()
