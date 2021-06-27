@@ -33,57 +33,67 @@ from model import Image
 from util import memcached
 
 from datetime import tzinfo, timedelta, datetime, date
-import os, logging, urllib, math, calendar, re
+import os
+import logging
+import urllib
+import math
+import calendar
+import re
 
-import util, widget, urllib
+import util
+import widget
+import urllib
+
 
 class QueryBase(webapp2.RequestHandler):
     def __init__(self, request=None, response=None):
         super(QueryBase, self).__init__(request=request, response=response)
-        #页面标题
+        # 页面标题
         self.title = ''
-        
+
     def dumpMultiPage(self, posts, drct, page_cursor, tplName):
-        #baseUrl代表根域名，redirectUrl用于（可能的）跳转
+        # baseUrl代表根域名，redirectUrl用于（可能的）跳转
         url = self.request.url
-        baseUrl = url[:url.find('/', 8)]    #8 for https
-        
-        #分页
-        page_size = util.POST_PER_PAGE_FOR_HANDSET if util.isFromMobileDevice(self.request) else util.POST_PER_PAGE
+        baseUrl = url[:url.find('/', 8)]  # 8 for https
+
+        # 分页
+        page_size = util.POST_PER_PAGE_FOR_HANDSET if util.isFromMobileDevice(
+            self.request) else util.POST_PER_PAGE
 
         if drct == 'next':
             cursor = Cursor(urlsafe=page_cursor)
         else:
-            #没有传这个参数说明是首页（第一页）
+            # 没有传这个参数说明是首页（第一页）
             cursor = None
-            
-        posts, next_cursor, more = posts.order(-Post.date).fetch_page(page_size, start_cursor=cursor)
-        
+
+        posts, next_cursor, more = posts.order(-Post.date).fetch_page(page_size,
+                                                                      start_cursor=cursor)
+
         if drct == 'next':
             next_page = next_cursor.urlsafe() if more else ''
             prev_page = cursor.urlsafe()
-        #elif drct == 'prev':
+        # elif drct == 'prev':
         #    next_page = next_cursor.urlsafe()
         #    prev_page = cursor.urlsafe() if more else ''
         #    posts = posts[1:]
         else:
             next_page = next_cursor.urlsafe() if more else ''
             prev_page = ''
-        
-        #分页按钮的链接前缀（最后要以/结束）
+
+        # 分页按钮的链接前缀（最后要以/结束）
         if re.match(r'.*?/page/(prev|next)/\S*', url, re.IGNORECASE):
             path = re.sub(r'(.*?/)page/(prev|next)/\S*', r'\1', url)
         else:
             path = url if url.endswith('/') else url + '/'
-        
-        #主题
+
+        # 主题
         cookies = self.request.cookies
         theme = cookies['theme'] if 'theme' in cookies else ''
-        
-        #请求来源
+
+        # 请求来源
         _r, ccode = util.is_from_civilization(self.request)
-        
-        #分页
+
+        # 分页
         """
         rg = []
         if pageCount <= 4:
@@ -96,42 +106,43 @@ class QueryBase(webapp2.RequestHandler):
             else:
                 rg = range(pageCount, page_cursor - 3, -1)
         """
-        
-        #输出
+
+        # 输出
         template = self.getTemplate(tplName)
         args = {
-            'baseUrl': baseUrl, 
-            'redirectUrl': url, 
-            'posts': posts, 
-            'isAdmin': users.is_current_user_admin(), 
-            'calendar': widget.Calendar(path), 
-            'widgets': [widget.SearchBox(), widget.BlogUpdates(), widget.RecentComment()],  #, widget.TagCloud()
+            'baseUrl': baseUrl,
+            'redirectUrl': url,
+            'posts': posts,
+            'isAdmin': users.is_current_user_admin(),
+            'calendar': widget.Calendar(path),
+            # , widget.TagCloud()
+            'widgets': [widget.SearchBox(), widget.BlogUpdates(), widget.RecentComment()],
             'theme': theme,
             'next_page': next_page,
             'prev_page': prev_page,
-            'pagePath': path, 
+            'pagePath': path,
             'title': self.title,
             'ccode': ccode
         }
-        
+
         self.response.write(template.render_unicode(**args))
-    
+
     def getTemplate(self, name):
-        #判断 IP 地址
-        #FIXME: Feed output routine should be another branch
+        # 判断 IP 地址
+        # FIXME: Feed output routine should be another branch
         result, ccode = util.is_from_civilization(self.request)
         if not result:
             if util.isFromMobileDevice(self.request):
                 name = 'mChina.html'
             else:
                 name = 'China.html'
-        #读取模板文件
-        mylookup = TemplateLookup(directories=[os.path.join(os.path.dirname(__file__), 'template')], 
-                                  #module_directory=os.path.join(os.path.dirname(__file__), 'tpl_cache'),     #GAE不支持tempfile.mkstemp()
+        # 读取模板文件
+        mylookup = TemplateLookup(directories=[os.path.join(os.path.dirname(__file__), 'template')],
+                                  # module_directory=os.path.join(os.path.dirname(__file__), 'tpl_cache'),     #GAE不支持tempfile.mkstemp()
                                   format_exceptions=True)
         return mylookup.get_template(name)
-        
-    #知道啥意思不……four O four……lol
+
+    # 知道啥意思不……four O four……lol
     def fof(self):
         cookies = self.request.cookies
         theme = cookies['theme'] if 'theme' in cookies else ''
@@ -142,7 +153,9 @@ class QueryBase(webapp2.RequestHandler):
             template = self.getTemplate('404.html')
         self.response.set_status(404)
         logging.info('Invalid request: %s' % self.request.path)
-        self.response.write(template.render_unicode(title = u'出错啦', theme=theme, uri=self.request.path))
+        self.response.write(template.render_unicode(
+            title=u'出错啦', theme=theme, uri=self.request.path))
+
 
 class Index(QueryBase):
     def get(self, drct=None, page_cursor=None):
@@ -150,18 +163,20 @@ class Index(QueryBase):
         page = 'mindex.html' if util.isFromMobileDevice(self.request) else 'index.html'
         self.dumpMultiPage(allPosts, drct, page_cursor, page)
 
+
 class Single(QueryBase):
     def get(self, y, m, slug):
-        #sure not empty?
+        # sure not empty?
         slug = unicode(urllib.unquote(slug), 'utf-8')
         post = Post.get_by_id('_' + slug)
-        cs = Comment.query(ancestor=post.key).filter(Comment.status == 'approved').order(+Comment.date)
+        cs = Comment.query(ancestor=post.key).filter(
+            Comment.status == 'approved').order(+Comment.date)
         if not post or post.isPrivate and not users.is_current_user_admin():
             self.fof()
         else:
             (pp, np) = self.getAdjTitles(post)
             url = self.request.url
-            baseUrl = url[:url.find('/', 8)]    #8 for https
+            baseUrl = url[:url.find('/', 8)]  # 8 for https
             rc = self.request.cookies
             cd = {}
             for k in ('c_name', 'c_email', 'c_url', 'c_captcha'):
@@ -174,8 +189,14 @@ class Single(QueryBase):
                 template = self.getTemplate('msingle.html')
             else:
                 template = self.getTemplate('single.html')
-            self.response.write(template.render_unicode(baseUrl=baseUrl, isAdmin=users.is_current_user_admin(), post=post, cs=cs, pp=pp, np=np, cookies=cd, theme=theme, single=True))
-    
+            # 请求来源
+            _r, ccode = util.is_from_civilization(self.request)
+            args = {
+                'baseUrl': baseUrl, 'isAdmin': users.is_current_user_admin(),
+                'post': post, 'cs': cs, 'pp': pp, 'np': np, 'cookies': cd, 'theme': theme,
+                'single': True, 'ccode': ccode}
+            self.response.write(template.render_unicode(**args))
+
     def getAdjTitles(self, p):
         found = False
         nk = pk = None
@@ -186,16 +207,18 @@ class Single(QueryBase):
         np = posts.order(-Post.date).filter(Post.date < date_of_post).get()
         pp = posts.order(+Post.date).filter(Post.date > date_of_post).get()
         return (pp, np)
-            
+
+
 class Page(QueryBase):
     def get(self, slug):
         post = Post.get_by_id('_' + slug)
         if not post:
             self.fof()
         else:
-            cs = Comment.query(ancestor=post.key).filter(Comment.status == 'approved').order(+Comment.date)
+            cs = Comment.query(ancestor=post.key).filter(
+                Comment.status == 'approved').order(+Comment.date)
             url = self.request.url
-            baseUrl = url[:url.find('/', 8)]    #8 for https
+            baseUrl = url[:url.find('/', 8)]  # 8 for https
             cookies = self.request.cookies
             for k in ('c_name', 'c_email', 'c_url', 'c_captcha'):
                 if k not in cookies:
@@ -205,34 +228,45 @@ class Page(QueryBase):
                 template = self.getTemplate('msingle.html')
             else:
                 template = self.getTemplate('single.html')
-            self.response.write(template.render_unicode(baseUrl=baseUrl, isAdmin=users.is_current_user_admin(), cs=cs, post=post, redirectUrl=url, cookies=cookies, theme=theme, page=True))
-            
+            # 请求来源
+            _r, ccode = util.is_from_civilization(self.request)
+            args = {'baseUrl': baseUrl, 'isAdmin': users.is_current_user_admin(),
+                    'cs': cs, 'post': post, 'redirectUrl': url, 'cookies': cookies,
+                    'theme': theme, 'page': True, 'ccode': ccode}
+            self.response.write(
+                template.render_unicode(**args))
+
+
 class ServeImage(webapp2.RequestHandler):
     def get(self, name):
         hkeys = self.request.headers.keys()
-        if 'Referer' in hkeys: 
+        if 'Referer' in hkeys:
             referer = self.request.headers['Referer']
             if referer:
-                if re.search(r'https?:\/\/.*?\.wokanxing\.info.*', referer, re.I) or referer.find('appspot.com') != -1:
+                if re.search(
+                        r'https?:\/\/.*?\.wokanxing\.info.*', referer, re.I) or referer.find(
+                        'appspot.com') != -1:
                     img = Image.get_by_id('_' + name)
                     if img:
-                        self.response.headers['Content-Type'] = 'image/%s' % name[name.rfind('.') + 1:]
+                        self.response.headers['Content-Type'] = 'image/%s' % name[name.rfind(
+                            '.') + 1:]
                         self.response.write(img.data)
                 else:
                     logging.warning('Disallowed referer: ' + referer)
-        
+
+
 class Feed(QueryBase):
     def get(self, dumpComments):
         data, updateTime = self.query(dumpComments)
         url = self.request.url
-        baseUrl = url[:url.find('/', 8)]    #8 for https
+        baseUrl = url[:url.find('/', 8)]  # 8 for https
         template = self.getTemplate('comment_atom.xml' if dumpComments else 'atom.xml')
         self.response.headers['Content-type'] = 'application/xml; charset=utf-8'
         #TODO: X-Pingback
         self.response.write(template.render_unicode(baseUrl=baseUrl, data=data, now=updateTime))
-        
+
     def query(self, dumpComments):
-        return self.queryCommentFeed() if dumpComments else self.queryPostFeed() 
+        return self.queryCommentFeed() if dumpComments else self.queryPostFeed()
 
     @memcached(-1)
     def queryPostFeed(self):
