@@ -20,7 +20,9 @@
 # THE SOFTWARE.
 import webapp2
 
-import os, urllib, logging
+import os
+import urllib
+import logging
 import util
 
 from google.appengine.ext import db
@@ -34,18 +36,27 @@ from mako.lookup import TemplateLookup
 from xmlrpclib import ServerProxy, Error
 from datetime import date
 
+
 class NewPost(webapp2.RequestHandler):
     def get(self):
-        mylookup = TemplateLookup(directories=[os.path.join(os.path.dirname(__file__), 'template'), os.path.join(os.path.dirname(__file__), '../../post/template')])
+        mylookup = TemplateLookup(
+            directories=[os.path.join(
+                os.path.dirname(__file__),
+                'template'),
+                os.path.join(
+                os.path.dirname(__file__),
+                '../../post/template')])
         template = mylookup.get_template('post_new.html')
         tags = Tag.query()
-        self.response.out.write(template.render_unicode(tags=tags))
-        
+        # 请求来源
+        _r, ccode = util.is_from_civilization(self.request)
+        self.response.out.write(template.render_unicode(tags=tags, ccode=ccode))
+
     def post(self):
         slug = self.request.get('slug')
         fromEdit = self.request.get('edit') == 'true'
-        
-        #TODO: 因为用slug做了key，所以如果改了slug，显示在url里面的slug还是不会变的，当然这个无所谓了，不改不就行了，哈哈哈哈哈~
+
+        # TODO: 因为用slug做了key，所以如果改了slug，显示在url里面的slug还是不会变的，当然这个无所谓了，不改不就行了，哈哈哈哈哈~
         if fromEdit:
             slug = urllib.unquote(slug)
             post = Post.get_by_id('_' + slug)
@@ -59,9 +70,9 @@ class NewPost(webapp2.RequestHandler):
                 slug += '-2'
             post = Post(id='_' + slug)
             post.slug = slug
-        
+
         post.content = self.request.get('content')
-        
+
         if not post.isPage:
             post.title = self.request.get('title')
             tags = self.request.get('tags')
@@ -76,18 +87,18 @@ class NewPost(webapp2.RequestHandler):
                         tag = Tag(name=tagName, id='_' + tagName)
                         tag.put()
                     post.tags.append(tag.key)
-        
+
         post.put()
 
         if not fromEdit:
             googlePingSrv = ServerProxy("http://blogsearch.google.com/ping/RPC2 ")
             url = self.request.url
-            baseUrl = url[:url.find('/', 8)]    #8 for https
+            baseUrl = url[:url.find('/', 8)]  # 8 for https
             try:
                 resp = googlePingSrv.weblogUpdates.extendedPing(
-                    'wokanblog', 
+                    'wokanblog',
                     baseUrl,
-                    baseUrl,    #需要检查更新的页面URL
+                    baseUrl,  # 需要检查更新的页面URL
                     baseUrl + '/feed'
                 )
                 if resp['flerror']:
@@ -103,18 +114,27 @@ class NewPost(webapp2.RequestHandler):
             self.redirect('/')
         else:
             self.redirect(post.makeLink())
-        
+
+
 class Edit(webapp2.RequestHandler):
     def get(self, y, m, slug):
         slug = unicode(urllib.unquote(slug), 'utf-8')
         post = Post.get_by_id('_' + slug)
 
-        mylookup = TemplateLookup(directories=[os.path.join(os.path.dirname(__file__), 'template'), os.path.join(os.path.dirname(__file__), '../../post/template')])
+        mylookup = TemplateLookup(
+            directories=[os.path.join(
+                os.path.dirname(__file__),
+                'template'),
+                os.path.join(
+                os.path.dirname(__file__),
+                '../../post/template')])
         template = mylookup.get_template('post_new.html')
         tags = Tag.query()
-        self.response.out.write(template.render_unicode(tags=tags,post=post))
-        
-        
+        # 请求来源
+        _r, ccode = util.is_from_civilization(self.request)
+        self.response.out.write(template.render_unicode(tags=tags, post=post, ccode=ccode))
+
+
 class NewImg(webapp2.RequestHandler):
     def get(self):
         self.response.out.write(u'''<html><body><form method="post" enctype="multipart/form-data" >
@@ -122,16 +142,16 @@ class NewImg(webapp2.RequestHandler):
             <p>裁剪：<input type="text" name="w" value="%d"/></p>
             <p><input type="submit" value="上传" /></p>
             </form></body></html>''' % util.MAX_IMG_WIDTH)
-        
+
     def post(self):
         stream = self.request.get("file")
         name = self.request.params['file'].filename
         widthLimit = int(self.request.get('w'))
-        d= date.today()
-        name= '%d_%d_%d_%s' % (d.year, d.month, d.day, name)
+        d = date.today()
+        name = '%d_%d_%d_%s' % (d.year, d.month, d.day, name)
         img = Image(src='', name=name, id='_' + name, data=db.Blob(stream))
         img.put()
-        
+
         gImg = images.Image(stream)
         if gImg.width > widthLimit:
             h = gImg.height * widthLimit / gImg.width
@@ -141,8 +161,8 @@ class NewImg(webapp2.RequestHandler):
             name = name[:dotPos] + '_resized' + ext
             resizedImg = Image(src='', name=name, id='_' + name, data=db.Blob(stream))
             resizedImg.put()
-            
+
         mylookup = TemplateLookup(directories=[os.path.join(os.path.dirname(__file__), 'template')])
         template = mylookup.get_template('upload_image_done.html')
-        #如果缩放过，返回缩略图的路径，让客户端反推原图的路径
+        # 如果缩放过，返回缩略图的路径，让客户端反推原图的路径
         self.response.out.write(template.render_unicode(name='/img/%s' % name))
