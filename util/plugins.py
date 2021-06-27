@@ -67,11 +67,6 @@ def make_quote(attrs):
     #FIXME: wrong anchor
     return '<a href="#c_%s">@%s</a>: &nbsp;' % (attrs['id'], attrs['author'])
     
-def is_from_civilization(req):
-    ccode = req.headers.get('X-AppEngine-Country')
-    logging.debug('GUEST FROM: ' + ccode)
-    return ccode != 'CN'
-
 add_html_filter('caption', make_caption, False)
 add_html_filter('quoter', make_quote, True)
 

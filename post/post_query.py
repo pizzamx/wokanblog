@@ -30,7 +30,7 @@ from mako.lookup import TemplateLookup
 
 from model import Post, Comment, CST
 from model import Image
-from util import memcached, plugins
+from util import memcached
 
 from datetime import tzinfo, timedelta, datetime, date
 import os, logging, urllib, math, calendar, re
@@ -49,7 +49,7 @@ class QueryBase(webapp2.RequestHandler):
         baseUrl = url[:url.find('/', 8)]    #8 for https
         
         #分页
-        page_size = util.POST_PER_PAGE_FOR_HANDSET if self.isFromMobileDevice() else util.POST_PER_PAGE
+        page_size = util.POST_PER_PAGE_FOR_HANDSET if util.isFromMobileDevice(self.request) else util.POST_PER_PAGE
 
         if drct == 'next':
             cursor = Cursor(urlsafe=page_cursor)
@@ -80,6 +80,9 @@ class QueryBase(webapp2.RequestHandler):
         cookies = self.request.cookies
         theme = cookies['theme'] if 'theme' in cookies else ''
         
+        #请求来源
+        _r, ccode = util.is_from_civilization(self.request)
+        
         #分页
         """
         rg = []
@@ -107,7 +110,8 @@ class QueryBase(webapp2.RequestHandler):
             'next_page': next_page,
             'prev_page': prev_page,
             'pagePath': path, 
-            'title': self.title
+            'title': self.title,
+            'ccode': ccode
         }
         
         self.response.write(template.render_unicode(**args))
@@ -115,8 +119,9 @@ class QueryBase(webapp2.RequestHandler):
     def getTemplate(self, name):
         #判断 IP 地址
         #FIXME: Feed output routine should be another branch
-        if not plugins.is_from_civilization(self.request):
-            if self.isFromMobileDevice():
+        result, ccode = util.is_from_civilization(self.request)
+        if not result:
+            if util.isFromMobileDevice(self.request):
                 name = 'mChina.html'
             else:
                 name = 'China.html'
@@ -126,16 +131,12 @@ class QueryBase(webapp2.RequestHandler):
                                   format_exceptions=True)
         return mylookup.get_template(name)
         
-    def isFromMobileDevice(self):
-        ua = self.request.headers['User-Agent']
-        return True if re.search(r'(iPhone|iPod|iPad|BlackBerry|Android)', ua) else False
-    
     #知道啥意思不……four O four……lol
     def fof(self):
         cookies = self.request.cookies
         theme = cookies['theme'] if 'theme' in cookies else ''
         ua = self.request.headers['User-Agent']
-        if self.isFromMobileDevice():
+        if util.isFromMobileDevice(self.request):
             template = self.getTemplate('404_m.html')
         else:
             template = self.getTemplate('404.html')
@@ -146,7 +147,7 @@ class QueryBase(webapp2.RequestHandler):
 class Index(QueryBase):
     def get(self, drct=None, page_cursor=None):
         allPosts = Post.query(Post.isPage == False)
-        page = 'mindex.html' if self.isFromMobileDevice() else 'index.html'
+        page = 'mindex.html' if util.isFromMobileDevice(self.request) else 'index.html'
         self.dumpMultiPage(allPosts, drct, page_cursor, page)
 
 class Single(QueryBase):
@@ -169,7 +170,7 @@ class Single(QueryBase):
                 else:
                     cd[k] = urllib.unquote(str(rc[k])).decode('utf-8')
             theme = rc['theme'] if 'theme' in rc else ''
-            if self.isFromMobileDevice():
+            if util.isFromMobileDevice(self.request):
                 template = self.getTemplate('msingle.html')
             else:
                 template = self.getTemplate('single.html')
@@ -200,7 +201,7 @@ class Page(QueryBase):
                 if k not in cookies:
                     cookies[k] = ''
             theme = cookies['theme'] if 'theme' in cookies else ''
-            if self.isFromMobileDevice():
+            if util.isFromMobileDevice(self.request):
                 template = self.getTemplate('msingle.html')
             else:
                 template = self.getTemplate('single.html')
