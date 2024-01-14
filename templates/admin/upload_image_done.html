@@ -1,0 +1,16 @@
+﻿<html>
+    <head><script language="javascript" type="text/javascript" src="/tinymce/jscripts/tiny_mce/tiny_mce_popup.js"></script></head>
+    <body>
+        <script type="text/javascript">
+            var FileBrowserDialogue = {
+                init : function () {
+                    var win = tinyMCEPopup.getWindowArg("window");
+                    win.document.getElementById(tinyMCEPopup.getWindowArg("input")).value = '{{ name }}';
+                    tinyMCEPopup.close();
+                }
+            };
+            
+            tinyMCEPopup.onInit.add(FileBrowserDialogue.init, FileBrowserDialogue);
+        </script>
+    </body>
+</html>

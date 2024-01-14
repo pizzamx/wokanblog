@@ -25,7 +25,7 @@ from google.appengine.api.datastore_errors import BadValueError
 from datetime import tzinfo, timedelta, datetime
 from util import filter_html
 
-import hashlib, urlparse, string, urllib2, logging, re, string
+import hashlib, urllib.parse, string, urllib.request, urllib.error, urllib.parse, logging, re, string
 
 class UTC(tzinfo):
     def utcoffset(self, dt):
@@ -42,12 +42,12 @@ class UrlProperty(ndb.StringProperty):
         if value and value.strip() != '':
             if not value.lower().startswith(('http://', 'https://')):
                 value = 'http://' + value
-            scheme, domain, path, params, query, fragment = urlparse.urlparse(value)
+            scheme, domain, path, params, query, fragment = urllib.parse.urlparse(value)
             if not domain:
                 raise BadValueError('Invalid URL: %s' % value)
         return value
 
-    data_type = unicode
+    data_type = str
     
 class EmailProperty(ndb.StringProperty):
     #自带的那个居然不验证....
@@ -63,7 +63,7 @@ class EmailProperty(ndb.StringProperty):
             
         return value
 
-    data_type = unicode
+    data_type = str
 
 class Post(ndb.Model):
     #author = ndb.UserProperty()
@@ -125,7 +125,7 @@ class Post(ndb.Model):
     def briefContent(self):
         t = self.content.split('<!--more-->')
         if len(t) > 1:
-            return t[0] + u'<p><a href="%s">继续阅读</a></p>' % self.makeLink()
+            return t[0] + '<p><a href="%s">继续阅读</a></p>' % self.makeLink()
         else:
             return t[0]
     
@@ -172,7 +172,7 @@ class Image(ndb.Model):
     
     def fetch(self):
         try:
-            stream = urllib2.urlopen(self.src)
+            stream = urllib.request.urlopen(self.src)
             self.data = ndb.Blob(stream.read())
             stream.close()
             self.put()

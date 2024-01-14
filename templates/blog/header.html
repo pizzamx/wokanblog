@@ -1,0 +1,88 @@
+## -*- coding: utf-8 -*-
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title>
+        {% if page or single %}
+        	{{ post.title }} | 
+		{% elif title %}
+			{{ title }} | 
+        {% endif %}
+        我看行
+        </title>
+		<link rel="icon" type="image/png"  href="/assets/qqi.png" />
+		<link rel="shortcut icon" href="/assets/favicon.ico" type="image/x-icon">
+        <link rel="alternate" type="application/atom+xml" href="/feed" title="我看部落格的 Atom Feed" />
+        <link rel="me" type="text/html" href="https://www.google.com/profiles/pizzamx"/> 
+        <link href="https://fonts.googleapis.com/css?family=Poiret+One:400" rel="stylesheet" type="text/css">
+        <link rel="stylesheet" href="/assets/style_{{ theme or 'modern' }}.css" type="text/css" media="screen" />
+	<!--link rel="pingback" href="" /-->
+	<!--script type="text/javascript" src="https://www.google.com/friendconnect/script/friendconnect.js"></script-->
+        <script type="text/javascript" src="/assets/highslide.js"></script>
+        <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+        <script src='https://www.google.com/recaptcha/api.js'></script>
+        <link rel="stylesheet" type="text/css" href="/assets/highslide.css" />
+        <!--[if lt IE 7]>
+            <link rel="stylesheet" type="text/css" href="../highslide/highslide-ie6.css" />
+        <![endif]-->
+        <script type="text/javascript">
+            //<![CDATA[
+            hs.lang = {
+            	cssDirection: 'ltr',
+            	loadingText: '载入中，稍候...',
+            	loadingTitle: '取消',
+            	focusTitle: '置于最前',
+            	fullExpandTitle: '原始尺寸',
+            	creditsText: '基于<i>Highslide JS</i>',
+            	creditsTitle: '查看 Highslide JS 官方首页',
+            	previousText: '上一张',
+            	nextText: '下一张',
+            	moveText: '移动',
+            	closeText: '关闭',
+            	closeTitle: '关闭 (ESC键)',
+            	resizeTitle: '调整尺寸',
+            	playText: '播放',
+            	playTitle: '播放幻灯片 (空格键)',
+            	pauseText: '暂停',
+            	pauseTitle: '暂停幻灯片 (空格键)',
+            	previousTitle: '上一张 (左方向键)',
+            	nextTitle: '下一张 (右方向键)',
+            	moveTitle: '移动',
+            	fullExpandText: '完整尺寸',
+            	number: 'Image %1 of %2',
+            	restoreTitle: '单击关闭图片，单击不放拖动图片。使用方向键进行图片切换。'
+            };
+
+            hs.registerOverlay({
+            	html: '<div class="closebutton" onclick="return hs.close(this)" title="Close"></div>',
+            	position: 'top right',
+            	fade: 2 // fading the semi-transparent overlay looks bad in IE
+            });
+            hs.graphicsDir = '/assets/graphics/';
+            hs.showCredits = false;
+            hs.wrapperClassName = 'borderless';
+            hs.captionEval = 'this.thumb.alt';
+            //]]>
+            
+        </script>
+	</head>
+	<body>
+		<div id="header">
+            <a id="logo" href="/" title="我看部落格"><div>我看部落格</div></a>
+            <p id="tagline">坚持·厚道·平常心</p>
+			<%def name="makeClass(path)">
+				{% if not redirectUrl or redirectUrl + '/' != baseUrl + path %}
+					page_item
+ 			    {% else %}
+			    	page_item current_page_item
+			    {% endif %}
+			</%def>
+			<ul>
+    			<li class="{{ makeClass('//') }}"><a href="/">部落格</a></li>
+    			<li class="{{ makeClass('/about/') }}"><a href="/about">关于我</a></li>
+    			<li class="{{ makeClass('') }}"><a href="http://res.wokanxing.info/jpgramma/" target="_blank">日语语法</a></li>
+			</ul>
+            <div id="feedlink"><a href="/feed" title="叔叔阿姨订阅我吧！"><img src="/assets/feed-icon-14x14.png" alt="Atom feed" /></a></div>
+            <div class="clear_bar"></div>
+		</div>

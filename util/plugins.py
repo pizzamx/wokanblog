@@ -29,7 +29,7 @@ REGISTERED_HTML_FILTER = []
 
 def after_html_filtered(html):
     for filter in REGISTERED_HTML_FILTER:
-        html = filter(html)
+        html = list(filter(html))
     return html
 
 # is_empty参数表示是否标签中有内容，比如[quoter/]这种就没有

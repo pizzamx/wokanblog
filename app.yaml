@@ -1,12 +1,9 @@
 #application: wokantest
 #version: ndb
-runtime: python27
-api_version: 1
-threadsafe: false
+runtime: python39
 automatic_scaling:
   max_instances: 1
-builtins:
-- remote_api: on
+#app_engine_apis: true
 
 handlers:
 - url: /static
@@ -21,9 +18,6 @@ handlers:
   static_files: assets/robots.txt
   upload: assets/robots.txt
 
-- url: /stats.*
-  script: google.appengine.ext.appstats.ui.app
-
 - url: /tinymce/.*
   script: $PYTHON_LIB/google/appengine/ext/zipserve
 
@@ -33,24 +27,3 @@ handlers:
 
 - url: /assets
   static_dir: assets
-
-- url: /admin/.*
-  script: admin.main.application
-  login: admin
-  secure: always
-
-- url: /comment/.*
-  script: admin.main.application
-  secure: always
-
-- url: /_batch/.*
-  script: batch.application
-  login: admin
-
-- url: /.*/edit
-  script: admin.main.application
-  login: admin
-
-- url: /.*
-  script: main.application
-  secure: always

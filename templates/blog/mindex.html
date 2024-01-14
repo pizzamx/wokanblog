@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+<div id="wrapper">
+    <div id="content" class="multi">
+        {% for post in posts %}
+        <div class="entry clear_bar">
+            <div class="styled_date">
+                <span class="styled_day">{{ post.getCSTDate().day }}</span>
+                <span class="styled_month">{{ post.getMonthDisplay() }}</span>
+            </div>
+            {% if post.isPrivate and not isAdmin %}
+            <h1 class="title">Classified Post</h1>
+            <div class="post_meta">
+                <span>{{ post.getCSTDate().strftime('%x %X') }}</span>
+                &nbsp;|&nbsp;Privileged users only
+            </div>
+            {% else %}
+            <h1 class="title"><a href="{{ post.makeLink() }}">{{ post.title }}{{ '<span
+                        class="private_sign">(Private)</span>' if post.isPrivate else '' }}</a></h1>
+            <div class="post_meta">
+                <span>{{ post.getCSTDate().strftime('%x %X') }}</span>
+                {% if isAdmin %}
+                &nbsp;|&nbsp;<span><a href="{{ post.getEditLink() }}">编辑</a></span>
+                {% endif %}
+            </div>
+            <div class="post_content clear_bar">{{ post.briefContent() }}</div>
+            <!--
+                            <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+                                     xmlns:dc="http://purl.org/dc/elements/1.1/"
+                                     xmlns:trackback="http://madskills.com/public/xml/rss/module/trackback/">
+                            <rdf:Description
+                                rdf:about="{{ baseUrl }}{{ post.makeLink() }}"
+                                dc:identifier="{{ baseUrl }}{{ post.makeLink() }}"
+                                dc:title="{{ post.title }}"
+                                trackback:ping="{{ baseUrl }}{{ post.makeLink() }}/trackback" />
+                            </rdf:RDF>
+                        -->
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+    {% endblock %}

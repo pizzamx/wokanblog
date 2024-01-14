@@ -1,0 +1,110 @@
+{% extends 'base.html' %}
+<div id="wrapper">
+	{% if not page %}
+	<div class="post_nav">
+		{% if pp %}
+		<span>[ 最近 ]</span><a href="{{ pp.makeLink() }}">&lt;&lt;{{ pp.title }}</a>
+		{% endif %}
+		{% if pp and np %}
+		&nbsp;&nbsp;&nbsp;&nbsp;
+		{% endif %}
+		{% if np %}
+		<a href="{{ np.makeLink() }}">{{ np.title }}&gt;&gt;</a><span>[ 之前 ]</span>
+		{% endif %}
+	</div>
+	{% endif %}
+	<div id="content" class="clear_bar">
+		<h1 class="title">{{ post.title }}{{ '<span class="private_sign">(Private Post)</span>' if post.isPrivate else
+			'' }}</h1>
+		<div class="post_meta">
+			<span>{{ post.getCSTDate().strftime('%x %X') }}</span>
+			{% if isAdmin %}
+			&nbsp;|&nbsp;<span><a href="{{ post.getEditLink() }}">编辑</a></span>
+			{% endif %}
+		</div>
+		<div class="post_content">{{ post.strippedContent() }}</div>
+		<div id="comments" class="clear_bar">
+			{% if cs.count() > 0 %}
+			<h2>{{ cs.count() }} 条留言</h2>
+			{% else %}
+			<h2>没人理我:(</h2>
+			{% endif %}
+			{% for c in cs %}
+			<div class="comment_entry" id="c_{{ c.key.id() }}">
+				{% if not c.isTrackback %}
+				<div class="comment_meta"><strong>{{ c.getAuthorLink() }}</strong> 在 {{ c.getCSTDate().strftime('%x %X')
+					}} 说
+					<span><a href="javascript:quote('{{ c.authorName }}', {{ c.key.id() }})">回复</a></span>
+				</div>
+				<div class="comment_content">
+					<div class="gravatar"><a href="/about-gravatar"><img src="{{ c.getGravatar() }}"
+								alt="gravatar" /></a></div>
+					{{ c.strippedContent() }}
+					<div class="clear_bar"></div>
+				</div>
+				{% else %}
+				<div class="comment_meta"><strong>{{ c.getAuthorLink() }}</strong>在{{ c.getCSTDate().strftime('%x %X')
+					}}引用</div>
+				<div class="comment_content">
+					{{ c.strippedContent() }}
+				</div>
+				{% endif %}
+			</div>
+			{% endfor %}
+		</div>
+		<div id="response" class="clear_bar">
+			<h2>随便说点啥</h2>
+			<form action="/comment/{{ post.slug }}" method="post">
+				<input type="hidden" value="{{ post.wpId }}" name="wpId" />
+				<div>大名<sup>*</sup>: <input type="text" name="name" value="{{ cookies['c_name'] }}" />&nbsp;&nbsp;
+					Email: <input type="text" name="email" value="{{ cookies['c_email'] }}" />&nbsp;&nbsp;
+					URL: <input type="text" name="url" value="{{ cookies['c_url'] }}" /></div>
+				<div><textarea name="content" id="comment_content" rows="6" cols="60"></textarea></div>
+				<!--
+                <div id="captcha">请输入「折腾」的拼音，小写，中间不带空格<input type="text" id="captcha_txt" name="captcha" value="{{ cookies['c_captcha'] }}" /></div>
+                -->
+				<div class="g-recaptcha" data-sitekey="6Ld_PCATAAAAAA49JG2lM97wZ5-0N9g-W1ZyLOhK"
+					style="padding-left: 500px;"></div>
+				<div class="button"><input type="submit" value="发布"></div>
+			</form>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+	function quote(name, id) {
+		var box = document.getElementById('comment_content');
+		box.value += '[quoter author="' + name + '" id="' + id + '"/]';
+		box.focus();
+	}
+	function highlight(idstr) {
+		if (idstr && idstr.match(/c_.*/)) {
+			var id = idstr.substr(1);
+			var block = document.getElementById(id);
+			if (block) {
+				$('.comment_entry').removeClass('highlighted_comment');
+				$(block).addClass('highlighted_comment');
+			}
+		}
+	}
+	$(document).ready(function () {
+		var hash = location.hash;
+		highlight(hash);
+		$('.comment_content a').click(function () {
+			var href = $(this).attr('href');
+			highlight(href.substr(href.indexOf('#')));
+		});
+		$('form').submit(function (e) {
+			if (grecaptcha.getResponse() == "") {
+				alert('请按照「发布」按钮上方的提示操作，证明你是我们种族的一员！\nPlease authenticate yourself to be a member of the human race by proceeding reCaptcha ops just above the submit button.');
+				e.preventDefault();
+			}
+			/*
+			if($('#captcha_txt').val() == ''){
+				alert('请先回答「发布」按钮上方的问题！');
+				e.preventDefault();
+			}
+			*/
+		});
+	});
+</script>
+<% endblock %>

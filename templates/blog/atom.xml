@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xmlns:thr="http://purl.org/syndication/thread/1.0" xml:base="${baseUrl}/feed">
+    <title>我看行之 Feed</title>
+    <subtitle type="text">坚持·厚道·平常心</subtitle>
+    <link rel="self" href="${baseUrl}/feed"/>
+    <updated>${now}</updated>
+	<generator uri="http://code.google.com/p/wokanblog/">我看行</generator>
+	<link rel="alternate" type="text/html" href="${baseUrl}" />
+	<id>${baseUrl}/feed</id>
+    <author>
+        <name>pizza</name>
+        <email>root@wokanxing.info</email>
+    </author>
+    % for post in data:    
+        <entry>
+            <title>${post.title}</title>
+            <link href="${baseUrl}${post.makeLink()}"/>
+            <id>${baseUrl}${post.makeLink()}</id>
+            <updated>${post.getCSTDate().isoformat()}</updated>
+            <summary type="html"><![CDATA[${post.briefContent()}]]></summary>
+        </entry>
+    % endfor
+</feed>

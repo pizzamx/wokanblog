@@ -1,0 +1,10 @@
+.gcloudignore
+.git
+.gitignore
+*.pyc
+*.pyo
+__pycache__/
+/setup.cfg
+README.md
+.vscode/
+venv/

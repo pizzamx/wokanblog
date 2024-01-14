@@ -27,7 +27,7 @@ from collections import defaultdict
 from model import Post, Image, Comment, Tag, Blogroll, CST, UTC
 from util import memcached
 
-import calendar, re, operator, urllib2, logging, time
+import calendar, re, operator, urllib.request, urllib.error, urllib.parse, logging, time
 
 class Calendar(object):
     def __init__(self, fromPath):
@@ -72,7 +72,7 @@ class Calendar(object):
     
     def dump(self):
         #monthImgUrl = self.getMonthImg(self.srcDay.year, self.srcDay.month)
-        template = u"""
+        template = """
             <div id="calendar">
                 <a href="%s" title="%s" class="month_link prev_month_link">&lt;</a><a href="%s" title="%s" class="month_link next_month_link">&gt;</a>
                 <div class="c_month">%d.%d</div>
@@ -84,7 +84,7 @@ class Calendar(object):
         divs = ''
         for (day, dclaz, count) in self.days:
             if count:
-                divs += u'<div class="%s"><a href="%s" class="day_with_posts" title="查看%d月%d日的文章">%s<span class="post_count">%d</span></a></div>' % (dclaz, '/%d/%d/%d/' % (self.srcDay.year, self.srcDay.month, day), self.srcDay.month, day, day, count)
+                divs += '<div class="%s"><a href="%s" class="day_with_posts" title="查看%d月%d日的文章">%s<span class="post_count">%d</span></a></div>' % (dclaz, '/%d/%d/%d/' % (self.srcDay.year, self.srcDay.month, day), self.srcDay.month, day, day, count)
             else:
                 pass
                 #divs += '<div class="%s"><span class="normal_day">%s</span></div>' % (dclaz, day)
@@ -94,8 +94,8 @@ class Calendar(object):
         ny, nm = (y if m < 12 else y + 1, m + 1 if m <12 else 1)
         prevUrl = '/%d/%d/' % (py, pm)
         nextUrl = '/%d/%d/' % (ny, nm)
-        prevTitle = u'查看%d年%d月的文章' % (py, pm)
-        nextTitle = u'查看%d年%d月的文章' % (ny, nm)
+        prevTitle = '查看%d年%d月的文章' % (py, pm)
+        nextTitle = '查看%d年%d月的文章' % (ny, nm)
             
         return template % (prevUrl, prevTitle, nextUrl, nextTitle, self.srcDay.year, self.srcDay.month, divs)
     
@@ -122,7 +122,7 @@ class Calendar(object):
         
 class RecentComment(object):
     def dump(self):
-        html = u'<h2>最新的留言</h2><ul id="recent_comments">'
+        html = '<h2>最新的留言</h2><ul id="recent_comments">'
         for c in self.getLatestComments():
             html += '<li><a href="%s">%s</a> (%s)</li>' % (c.makeLink(), c.key.parent().get().title, c.getAuthorLink())
         html += '</ul>'
@@ -147,10 +147,10 @@ class TagCloud(object):
             
         minSize, maxSize = 13, 18
         
-        html = u'<h2>Tags</h2><div id="tag_cloud">'
+        html = '<h2>Tags</h2><div id="tag_cloud">'
         for (name, count) in countList:
             size = (count - minCount) / diff * (maxSize - minSize) + minSize
-            html += u'<a href="/tag/%s" title="%d 篇文章" style="font-size: %spx;">%s</a>\n' % (name, count, size, name)
+            html += '<a href="/tag/%s" title="%d 篇文章" style="font-size: %spx;">%s</a>\n' % (name, count, size, name)
         html += '</div>'
         return html
 
@@ -165,7 +165,7 @@ class TagCloud(object):
                     result[tname] = result[tname] + 1
                 else:
                     result[tname] = 1
-        return sorted(result.items(), key=operator.itemgetter(1), reverse=True)
+        return sorted(list(result.items()), key=operator.itemgetter(1), reverse=True)
     
 class BlogUpdates(object):
     "显示blogroll的更新情况"
@@ -185,7 +185,7 @@ class BlogUpdates(object):
                 claz = 'gone'
 
             data = (br.blogUrl, br.desc, br.name, br.desc, claz, br.lastTitle, br.lastUpdate.replace(tzinfo=UTC()).astimezone(CST()))
-            html += u'<li><a href="%s" title="%s">%s</a><br>%s<div class="update_status %s" title="%s (更新于 %s)"></div></li>' % data
+            html += '<li><a href="%s" title="%s">%s</a><br>%s<div class="update_status %s" title="%s (更新于 %s)"></div></li>' % data
         return html + '</ul>'
 
 class SearchBox(object):

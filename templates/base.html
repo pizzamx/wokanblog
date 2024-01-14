@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>
+        {% if page or single %}
+        {{ post.title }} |
+        {% elif title %}
+        {{ title }} |
+        {% endif %}
+        我看行
+    </title>
+    <link rel="icon" type="image/png" href="/assets/qqi.png" />
+    <link rel="shortcut icon" href="/assets/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="/feed" title="我看部落格的 Atom Feed" />
+    <link rel="me" type="text/html" href="https://www.google.com/profiles/pizzamx" />
+    <link href="https://fonts.googleapis.com/css?family=Poiret+One:400" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="/assets/style_{{ theme or 'modern' }}.css" type="text/css" media="screen" />
+    <!--link rel="pingback" href="" /-->
+    <!--script type="text/javascript" src="https://www.google.com/friendconnect/script/friendconnect.js"></script-->
+    <script type="text/javascript" src="/assets/highslide.js"></script>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+    <script src='https://www.google.com/recaptcha/api.js'></script>
+    <link rel="stylesheet" type="text/css" href="/assets/highslide.css" />
+    <!--[if lt IE 7]>
+            <link rel="stylesheet" type="text/css" href="../highslide/highslide-ie6.css" />
+        <![endif]-->
+    <script type="text/javascript">
+        //<![CDATA[
+        hs.lang = {
+            cssDirection: 'ltr',
+            loadingText: '载入中，稍候...',
+            loadingTitle: '取消',
+            focusTitle: '置于最前',
+            fullExpandTitle: '原始尺寸',
+            creditsText: '基于<i>Highslide JS</i>',
+            creditsTitle: '查看 Highslide JS 官方首页',
+            previousText: '上一张',
+            nextText: '下一张',
+            moveText: '移动',
+            closeText: '关闭',
+            closeTitle: '关闭 (ESC键)',
+            resizeTitle: '调整尺寸',
+            playText: '播放',
+            playTitle: '播放幻灯片 (空格键)',
+            pauseText: '暂停',
+            pauseTitle: '暂停幻灯片 (空格键)',
+            previousTitle: '上一张 (左方向键)',
+            nextTitle: '下一张 (右方向键)',
+            moveTitle: '移动',
+            fullExpandText: '完整尺寸',
+            number: 'Image %1 of %2',
+            restoreTitle: '单击关闭图片，单击不放拖动图片。使用方向键进行图片切换。'
+        };
+
+        hs.registerOverlay({
+            html: '<div class="closebutton" onclick="return hs.close(this)" title="Close"></div>',
+            position: 'top right',
+            fade: 2 // fading the semi-transparent overlay looks bad in IE
+        });
+        hs.graphicsDir = '/assets/graphics/';
+        hs.showCredits = false;
+        hs.wrapperClassName = 'borderless';
+        hs.captionEval = 'this.thumb.alt';
+            //]]>
+
+    </script>
+</head>
+
+<body>
+    <div id="header">
+        <a id="logo" href="/" title="我看部落格">
+            <div>我看部落格</div>
+        </a>
+        <p id="tagline">坚持·厚道·平常心</p>
+        <%def name="makeClass(path)">
+            {% if not redirectUrl or redirectUrl + '/' != baseUrl + path %}
+            page_item
+            {% else %}
+            page_item current_page_item
+            {% endif %}
+        </%def>
+        <ul>
+            <li class="{{ makeClass('//') }}"><a href="/">部落格</a></li>
+            <li class="{{ makeClass('/about/') }}"><a href="/about">关于我</a></li>
+            <li class="{{ makeClass('') }}"><a href="http://res.wokanxing.info/jpgramma/" target="_blank">日语语法</a></li>
+        </ul>
+        <div id="feedlink"><a href="/feed" title="叔叔阿姨订阅我吧！"><img src="/assets/feed-icon-14x14.png"
+                    alt="Atom feed" /></a></div>
+        <div class="clear_bar"></div>
+    </div>
+
+    {% block content %}{% endblock %}
+
+    <div id="footer" class="clear_bar">
+        {% if next_page and next_page != '' %}
+        <div class="post_nav post_nav_b">
+            {% if next_page != '' %}
+            <a href="{{ pagePath }}page/next/{{ next_page }}"> 较早的文章</a><span>&gt;&gt;&gt;</span>
+            {% endif %}
+        </div>
+        {% endif %}
+        我看行由国产精品<a href="https://github.com/pizzamx/wokanblog">「我看部落格」</a>及舶来品<a href="http://appengine.google.com/">
+            Google
+            App Engine </a>强力驱动（{{ ccode }}）。
+    </div>
+    <script>
+        (function (i, s, o, g, r, a, m) {
+            i['GoogleAnalyticsObject'] = r; i[r] = i[r] || function () {
+                (i[r].q = i[r].q || []).push(arguments)
+            }, i[r].l = 1 * new Date(); a = s.createElement(o),
+                m = s.getElementsByTagName(o)[0]; a.async = 1; a.src = g; m.parentNode.insertBefore(a, m)
+        })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
+
+        ga('create', 'UA-102907-6', 'wokanxing.info');
+        ga('send', 'pageview');
+
+        $(document).ready(function () {
+            //这段已经没用啦 May21 2016
+            $('#swc_theme_btn').click(function () {
+                $('#theme_container').toggle();
+            });
+            $('#theme_container img').click(function () {
+                var loc = window.location.toString();
+                var src = this.src.substring(this.src.lastIndexOf('/') + 1);
+                var styname = src.split('_')[0];
+                window.location = '/theme/' + styname + '/' + loc.substring(loc.indexOf('/', 8));
+            });
+            //好傻啊，另外这个 1 是怎么回事
+            $('.post_nav_b').css('top', '-' + ($('.post_nav_b').outerHeight(true) - 1) + 'px');
+            //控制顶部菜单的出现。不在视野中但向上滚动时，出现
+            $.data(document, "oldScrollTop", $(document).scrollTop());
+            $(window).scroll(function () {
+                var obj = $('#header');
+                if (obj) {
+                    var _h = obj.outerHeight(true);
+                    var _st = $(document).scrollTop();
+                    if (_st < $.data(document, "oldScrollTop")) { //向上滚动
+                        if (_st <= _h) {
+                            if (obj.css('position') != 'fixed') {
+                                //还没滚出顶部菜单高度且并非漂浮的话，不要动
+                            } else {
+                                //还没滚出顶部菜单高度且漂浮的话（例如从下往上进入顶部）
+                            }
+                        } else {
+                            //已经滚出顶部菜单高度的话，固定在顶
+                            if (obj.css('position') != 'fixed') {
+                                obj.css({
+                                    'position': 'fixed',
+                                    'top': 0,
+                                    'width': '100%'
+                                });
+                                obj.next().css({
+                                    'top': _h + 'px'
+                                });
+                            }
+                        }
+                    } else {
+                        obj.css('position', 'static');
+                        obj.next().css({
+                            'top': 0
+                        });
+                    }
+                    $.data(document, "oldScrollTop", _st);
+                }
+            });
+        });
+    </script>
+    <!--[if lte IE 6]>
+            	<script src="http://letskillie6.googlecode.com/svn/trunk/letskillie6.zh_CN.pack.js"></script>
+            <![endif]-->
+</body>
+
+</html>

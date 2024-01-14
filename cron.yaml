@@ -1,8 +1,0 @@
-cron:
-- description: update blogroll
-  url: /admin/updateblogroll
-  schedule: every 6 hours
-
-- description: update blogroll
-  url: /admin/exe_ds_task
-  schedule: every 20 minutes

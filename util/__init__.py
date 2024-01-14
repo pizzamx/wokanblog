@@ -19,17 +19,17 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 
-from google.appengine.api import memcache
-from google.appengine.ext import webapp
-
-from pygments import highlight
-from pygments.lexers import get_lexer_by_name
-from pygments.formatters import HtmlFormatter
-
-from util.plugins import after_html_filtered
-
+import functools
 import logging
 import re
+
+from flask import redirect, url_for
+from google.appengine.api import users
+from pygments import highlight
+from pygments.formatters import HtmlFormatter
+from pygments.lexers import get_lexer_by_name
+
+from util.plugins import after_html_filtered
 
 POST_PER_PAGE = 10
 POST_PER_PAGE_FOR_HANDSET = 2
@@ -82,7 +82,7 @@ SMILEYS = dict(
      (':?:', 'question')))
 SMILEY_PATTERNS = []
 SMILEY_CLASS = []
-for (code, name) in SMILEYS.iteritems():
+for (code, name) in SMILEYS.items():
     SMILEY_PATTERNS.append(re.compile(
         r'(\s|^)%s(\s|$|(</)|(\[/))' % re.escape(code), re.IGNORECASE))
     SMILEY_CLASS.append('smiley_%s' % name)
@@ -91,19 +91,20 @@ for (code, name) in SMILEYS.iteritems():
 def memcached(t):
     def w(func):
         def wrapper(self, *args):
-            # so func_name should be unique
-            cachedData = memcache.get(func.func_name)
+            """
+            cachedData = memcache.get(func.__name__)
             if cachedData is not None:
-                #logging.debug('%s hit', func.func_name)
                 return cachedData
 
-            logging.debug('%s missed', func.func_name)
+            logging.debug('%s missed', func.__name__)
             cachedData = func(self, *args)
             if t == -1:
-                memcache.add(func.func_name, cachedData)
+                memcache.add(func.__name__, cachedData)
             else:
-                memcache.add(func.func_name, cachedData, t)
+                memcache.add(func.__name__, cachedData, t)
             return cachedData
+            """
+            return func(self, *args)
         return wrapper
     return w
 
@@ -169,6 +170,16 @@ def is_from_civilization(req):
     return ccode != 'CN', ccode
 
 
-def isFromMobileDevice(req):
+def is_mobile_dev(req):
     ua = req.headers.get('User-Agent', '')
     return True if re.search(r'(iPhone|iPod|iPad|BlackBerry|Android)', ua) else False
+
+
+def login_required(view):
+    @functools.wraps(view)
+    def wrapped_view(**kwargs):
+        if users.is_current_user_admin():
+            return view(**kwargs)
+        return redirect(url_for('blog.show_home'))
+
+    return wrapped_view
