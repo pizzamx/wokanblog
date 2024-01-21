@@ -90,6 +90,7 @@ class NewPost(webapp2.RequestHandler):
 
         post.put()
 
+        """
         if not fromEdit:
             googlePingSrv = ServerProxy("http://blogsearch.google.com/ping/RPC2 ")
             url = self.request.url
@@ -105,7 +106,8 @@ class NewPost(webapp2.RequestHandler):
                     logging.error(resp['message'])
             except Error, v:
                 logging.error(v)
-
+        """
+                
         memcache.delete('getAllKeys')
         memcache.delete('queryPostFeed')
         memcache.delete('getGroupedCount')
